@@ -6,11 +6,16 @@ import SearchBar from './components/SearchBar'
 import SignupPage from './components/pages/SignupPage'
 import MyPage from './components/pages/MyPage'
 import MovieDetail from './components/MovieDetail'
+import Navibar from './Navibar'
+import { AuthContextPro } from './AuthContextPro'
+import ReviewList from './components/ReviewList'
+
 
 const App = () => {
   return (
-    <div>
+    <AuthContextPro>
       <BrowserRouter>
+      <Navibar/>
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -18,9 +23,10 @@ const App = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/movie:id" element={<MovieDetail />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/reviewList" element={<ReviewList />} />
         </Routes>
     </BrowserRouter>
-    </div>
+    </AuthContextPro>
   )
 }
 
