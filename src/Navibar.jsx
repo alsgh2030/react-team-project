@@ -6,7 +6,7 @@ const Navibar = () => {
 
   const navigate = useNavigate()
   const { currentUser, logout } = useAuth()
-  const [serch, setSerch] = useState('')
+  const [search, setSearch] = useState('')
 
   const to_myPage = () => {
     navigate('/mypage')
