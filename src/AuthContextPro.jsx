@@ -68,6 +68,23 @@ export const AuthContextPro=({children})=>{
 
     localStorage.setItem('movies',JSON.stringify(movies))
 
+
+    // review 목데이터
+    const reviews = [
+  { userId: 'user2', id: 1791590400000, movieId: 14, title: '웃다가 울었어요',     content: '두 배우의 호흡이 최고입니다. 인생 영화예요.',                score: 5, like: 121 },
+  { userId: 'user1', id: 1791594000000, movieId: 2,  title: '작화가 미쳤습니다',   content: '극장에서 다시 보고 싶어요. 음악도 너무 좋았어요.',            score: 5, like: 98 },
+  { userId: 'user3', id: 1791597600000, movieId: 10, title: '결말이 오래 남네요',   content: '설정이 신선하고 연출이 대단합니다. 두 번 봐도 재밌어요.',     score: 4, like: 64 },
+  { userId: 'user4', id: 1791601200000, movieId: 19, title: '명대사 폭격',         content: '대사 하나하나가 명대사. 몇 번을 봐도 재밌습니다.',            score: 5, like: 87 },
+  { userId: 'user3', id: 1791604800000, movieId: 18, title: '조용하지만 큰 울림',   content: '천천히 스며드는 영화. 마지막 장면에서 소름 돋았어요.',        score: 5, like: 45 },
+  { userId: 'user2', id: 1791608400000, movieId: 6,  title: '피아노 장면 최고',     content: '반전도 좋았고 음악이 정말 예뻐요.',                          score: 4, like: 52 },
+  { userId: 'user1', id: 1791612000000, movieId: 12, title: '온 가족 추천',         content: '가족끼리 보기 딱 좋은 애니메이션이에요.',                    score: 5, like: 33 },
+  { userId: 'user4', id: 1791615600000, movieId: 7,  title: '귀여워서 힐링',        content: '보기만 해도 기분이 좋아지는 영화. 캐릭터가 너무 귀여워요.',   score: 4, like: 21 },
+  { userId: 'user2', id: 1791619200000, movieId: 11, title: '후반부가 아쉬워요',    content: '볼거리는 많은데 뒷부분이 조금 늘어졌어요.',                  score: 3, like: 12 },
+  { userId: 'user1', id: 1791622800000, movieId: 21, title: '재난 장면은 좋았는데', content: '박진감은 있었지만 이야기는 평범했어요.',                      score: 3, like: 5 },
+]
+
+localStorage.setItem('reviews',JSON.stringify(reviews)||[])
+
     return(
         <AuthContext.Provider value={{currentUser,setCurrentUser,logout}}>
             {children}

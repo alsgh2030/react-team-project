@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Heart, MessageCircle } from 'lucide-react'
+import StarDisplay from '../StarDisplay'
 const MainPage = () => {
 
 
@@ -7,7 +9,7 @@ const MainPage = () => {
 
 
   const movies=JSON.parse(localStorage.getItem('movies'))
-  const reviews=JSON.parse(localStorage.getItem('Reviews'))
+  const reviews=JSON.parse(localStorage.getItem('reviews')) || []
 
   const shuffled = () => {
   const suf_mov = movies.map((x) => ({ ...x, key: Math.random() }))
@@ -40,8 +42,9 @@ const MainPage = () => {
 
   const navigate=useNavigate()
 
-  // const alig_review=[...reviews].sort((x,y)=>x.id - y.id)
-  const profile_icon=JSON.parse(localStorage.getItem('profile_icon'))
+  const alig_review=[...reviews].sort((x,y)=>x.id - y.id)
+  const profile_icon=JSON.parse(localStorage.getItem('profile_icon')) || []
+  const comments=JSON.parse(localStorage.getItem('comments')) || []
 
   return (
     <div className='bg-white pb-16'>
@@ -51,8 +54,7 @@ const MainPage = () => {
         {random_movies.map((x)=>{
         return <img key={x.id} src={x.poster} onClick={()=>navigate(`/movie:${x.id}`)} className='h-[380px] w-72 shrink-0 border-2 border-black object-cover'
         style={{clipPath:'polygon(0 0, 92% 0, 100% 12%, 100% 100%, 8% 100%, 0 88%)'}}
-        />  // 영화 목록 중 5개만? 나오게 ㅇㅇ
-        //누르면 네비게이트로 해서 경로를/movie/{x.id}로하는걸로이야기 다음 주에 하고
+        /> 
         })}
       </div>
       <button onClick={onRight1} className='absolute right-[12%] top-1/2 z-10 -translate-y-1/2 cursor-pointer text-7xl text-white [-webkit-text-stroke:3px_black]'>▶</button>
@@ -66,27 +68,46 @@ const MainPage = () => {
       <div className='flex gap-5'>
       {top_movie_List.map((x)=>{
         return <img key={x.id} src={x.poster} onClick={()=>navigate(`/movie:${x.id}`)}className='aspect-[2/3] w-[220px] shrink-0 rounded-[36px] border-2 border-slate-800 object-cover shadow-[4px_6px_8px_rgba(0,0,0,0.4)]'/>
-      })} {/* 평점 3점 이상인 얘들 10개? 나열, 나머지는 영화 리스트?, 앞 뒤가 연결되어 있어서 반복(루프) */}
+      })} 
       </div>
       </div>
-      {/* 위와 동일하게 누르면 네비게이트로 /movie/{x.id}로 하는 걸로하고 */}
       <button onClick={onRight2} className='absolute right-0 top-1/2 w-10 -translate-y-1/2 cursor-pointer text-center text-4xl text-black'>▶</button>
       </div>
 
-      {/* <h3>따끈따끈한 신작 리뷰 ★</h3>
-      {alig_review.slice(0,5).map((x)=>{
+      <h3 className='mt-10 inline-block border-2 border-black bg-white py-2 pl-6 pr-10 text-xl font-bold' style={{clipPath:'polygon(0 0, 94% 0, 100% 30%, 100% 100%, 0 100%)'}}>따끈따끈한 신작 리뷰 ★</h3>
+      <div className='mt-4 grid grid-cols-3 gap-x-10 gap-y-4 bg-gray-300 px-14 py-8'>
+      {alig_review.length === 0 && (
+        <p className='col-span-3 py-10 text-center text-lg text-gray-600'>아직 등록된 리뷰가 없습니다.</p>
+      )}
+      {alig_review.slice(0,6).map((x)=>{
         const ran_profile= profile_icon.map((x) => ({ ...x, key: Math.random() }))
         ran_profile.sort((x,y)=>x.key - y.key)
-        return (<div key={x.id}>
-          <img src={ran_profile[0].profile_icon}/>
-          <h4>{x.title}</h4>
-          <p>{x.content}</p>
+        return (<div key={x.id} className='flex items-center gap-4 rounded-3xl bg-gray-100 p-4'>
+          <div className='flex w-24 shrink-0 flex-col items-center gap-1'>
+          <img src={ran_profile[0]?.profile_icon} className='h-20 w-20 rounded-full object-cover'/>
+          <p className='max-w-full truncate text-xs'>{x.userId}</p>
+          </div>
+          <div className='flex min-w-0 flex-1 flex-col gap-2'>
+          <div className='flex items-center justify-between gap-2'>
+          <h4 className='truncate text-lg font-semibold'>{x.title}</h4>
+          <StarDisplay score={x.score} />
+          </div>
+          <p className='line-clamp-3 text-xs'>{x.content}</p>
+          <div className='flex justify-end gap-2'>
+          <div className='flex items-center gap-2 rounded-lg bg-pink-200 px-3 py-1 text-lg'>
+          <Heart size={26} className='fill-rose-600 text-rose-600' />
+          {x.like}
+          </div>
+          <div className='flex items-center gap-2 rounded-lg bg-sky-300 px-3 py-1 text-lg'>
+          <MessageCircle size={26} className='fill-blue-600 text-blue-600' />
+          {comments.filter((c)=>c.reviewId===x.id).length}
+          </div>
+          </div>
+          </div>
           </div>
         )
       })}
-      {alig_review.slice(6,11).map((x)=>{
-        return 
-      })} */}
+      </div>
 
 
     </div>
