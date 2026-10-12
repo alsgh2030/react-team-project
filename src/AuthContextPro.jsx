@@ -19,6 +19,11 @@ import img18 from './image/타인의 삶.jpg'
 import img19 from './image/타짜.jpg'
 import img20 from './image/퍼니게임.jpg'
 import img21 from './image/해운대.jpg'
+import profile_pink from './image/profile_img/profile_icon_pink.png'
+import profile_brown from './image/profile_img/profile_icon_brown.png'
+import profile_green from './image/profile_img/profile_icon_green.png'
+import profile_blue from './image/profile_img/profile_icon_blue.png'
+
 import { createContext, useContext, useState } from "react";
 
 const AuthContext=createContext()
@@ -33,6 +38,9 @@ export const AuthContextPro=({children})=>{
         setCurrentUser(null)
         localStorage.removeItem('currentUser')
     }
+
+    const profile_icon=[{profile_icon:profile_pink},{profile_icon:profile_brown},{profile_icon:profile_green},{profile_icon:profile_blue}]
+    localStorage.setItem('progile_icon',stringify(profile_icon))
 
     const movies = [
   { id: 1,  title: '걸캅스',                 content: '전직 경찰과 현직 민원실 경찰이 디지털 성범죄를 쫓는 이야기', avgScore: 3.2, reviewCount: 1, poster: img1 },

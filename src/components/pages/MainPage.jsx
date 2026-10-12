@@ -40,7 +40,8 @@ const MainPage = () => {
 
   const navigate=useNavigate()
 
-  // const alig_review=[...reviews].sort((x,y)=>x.id - y.id)
+  const alig_review=[...reviews].sort((x,y)=>x.id - y.id)
+  const profile_icon=JSON.parse(localStorage.getItem('profile_icon'))
 
   return (
     <div className='bg-white pb-16'>
@@ -71,15 +72,19 @@ const MainPage = () => {
       {/* 위와 동일하게 누르면 네비게이트로 /movie/{x.id}로 하는 걸로하고 */}
       <button onClick={onRight2} className='absolute right-0 top-1/2 w-10 -translate-y-1/2 cursor-pointer text-center text-4xl text-black'>▶</button>
       </div>
-
-      {/* <h3>따끈따끈한 신작 리뷰 ★</h3>
-      <button onClick={onLeft3}>◀</button>
+{/* 
+      <h3>따끈따끈한 신작 리뷰 ★</h3>
       {alig_review.slice(0,5).map((x)=>{
-        return 
+        const ran_profile= profile_icon.map((x) => ({ ...x, key: Math.random() }))
+        ran_profile.sort((x,y)=>x.key - y.key)
+        // return (<img src={ran_profile[0].profile_icon}/>
+        //   <h4>{x.title}</h4>
+        //   <p>{x.content}</p>
+        )
       })}
-      {alig_review.slice(0,5)} 
-      {alig_review.slice(0,5)}
-      <button onClick={onRight3}>▶</button>  */}
+      {alig_review.slice(6,11).map((x)=>{
+        return 
+      })} */}
 
 
     </div>
