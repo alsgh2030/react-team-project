@@ -81,7 +81,7 @@ const MainPage = () => {
       )}
       {alig_review.slice(0,6).map((x)=>{
         const ran_profile= profile_icon.map((x) => ({ ...x, key: Math.random() }))
-        ran_profile.sort((x,y)=>x.key - y.key)
+        ran_profile.sort((x,y)=>y.key - x.key)
         return (<div key={x.id} className='flex items-center gap-4 rounded-3xl bg-gray-100 p-4'>
           <div className='flex w-24 shrink-0 flex-col items-center gap-1'>
           <img src={ran_profile[0]?.profile_icon} className='h-20 w-20 rounded-full object-cover'/>
