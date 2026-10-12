@@ -26,12 +26,15 @@ import profile_blue from './image/profile_img/profile_icon_blue.png'
 
 import { createContext, useContext, useState } from "react";
 
-const AuthContext=createContext()
+const AuthContext = createContext();
 
 export const AuthContextPro=({children})=>{
-    const[currentUser,setCurrentUser]=useState(
-        JSON.parse(localStorage.getItem('currentUser'))||true
-    )
+    const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem('currentUser')) || {
+        userId: 'admin',
+        username: 'admin'
+    }
+    );
 
 
     const logout=()=>{
@@ -92,4 +95,4 @@ localStorage.setItem('reviews',JSON.stringify(reviews)||[])
     )
 }
 
-export const useAuth=()=>useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);

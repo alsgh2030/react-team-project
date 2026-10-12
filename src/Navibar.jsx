@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from './AuthContextPro'
+import SearchBar from './components/SearchBar'
+
 
 const Navibar = () => {
 
   const navigate = useNavigate()
   const { currentUser, logout } = useAuth()
-  const [search, setSearch] = useState('')
 
   const to_myPage = () => {
     navigate('/mypage')
@@ -28,55 +29,73 @@ const Navibar = () => {
               <path d='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z' />
             </svg>
           </span>
-          <span className='text-[22px] font-black text-white tracking-tight whitespace-nowrap'>민호 무비</span>
+
+          <span className='text-[22px] font-black text-white tracking-tight whitespace-nowrap'>
+            민호 무비
+          </span>
         </Link>
 
         <div className='flex items-center gap-1.5 text-lg font-bold'>
-          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>영화 리스트</Link>
-          <Link to='/reviewList' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>리뷰 리스트</Link>
-          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>탭 3</Link>
-          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>탭 4</Link>
+          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
+            영화 리스트
+          </Link>
+
+          <Link to='/reviewList' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
+            리뷰 리스트
+          </Link>
+
+          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
+            탭 3
+          </Link>
+
+          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
+            탭 4
+          </Link>
         </div>
       </div>
 
-      {/* 오른쪽: 돋보기 + 검색창 + 버튼 */}
+      {/* 오른쪽: 검색창 + 버튼 */}
       <div className='flex items-center gap-4'>
-        <div className='flex items-center gap-2.5'>
-          <svg width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='#111' strokeWidth='2.6' strokeLinecap='round' aria-hidden='true'>
-            <circle cx='10' cy='10' r='6.5' />
-            <line x1='15' y1='15' x2='21' y2='21' />
-          </svg>
-          <input
-            placeholder='제목을 검색하세요…'
-            className='w-[250px] h-11 px-3.5 border-2 border-black rounded-xl bg-white text-[15px] font-medium placeholder:text-gray-500 focus:outline-3 focus:outline-[#FFD93B]'
-            onClick={() => navigate('/search')}
-          ></input>
-        </div>
+
+        {/* SearchBar에서 검색 가능하도록 변경함 */}
+        <SearchBar />
 
         {!currentUser &&
           <div className='flex items-center gap-2.5'>
             <Link
               to='/login'
               className='flex items-center h-11 px-5 border-2 border-black rounded-xl bg-white text-[15px] font-bold hover:bg-slate-100'
-            >로그인</Link>
+            >
+              로그인
+            </Link>
+
             <Link
               to='/signup'
               className='flex items-center h-11 px-5 border-2 border-black rounded-xl bg-[#FFD93B] text-[15px] font-bold hover:brightness-95'
-            >회원가입</Link>
+            >
+              회원가입
+            </Link>
           </div>
         }
+
         {currentUser &&
           <div className='flex items-center gap-2.5'>
             <button
               onClick={to_myPage}
               className='h-11 px-5 border-2 border-black rounded-xl bg-green-700 text-[15px] font-bold text-white cursor-pointer hover:bg-green-800'
-            >마이페이지</button>
+            >
+              마이페이지
+            </button>
+
             <button
               onClick={logout1}
               className='h-11 px-5 border-2 border-black rounded-xl bg-red-600 text-[15px] font-bold text-white cursor-pointer hover:bg-red-700'
-            >로그아웃</button>
+            >
+              로그아웃
+            </button>
           </div>
         }
+
       </div>
     </nav>
   )
