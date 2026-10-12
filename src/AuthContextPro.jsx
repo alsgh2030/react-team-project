@@ -40,7 +40,7 @@ export const AuthContextPro=({children})=>{
     }
 
     const profile_icon=[{profile_icon:profile_pink},{profile_icon:profile_brown},{profile_icon:profile_green},{profile_icon:profile_blue}]
-    localStorage.setItem('progile_icon',stringify(profile_icon))
+    localStorage.setItem('profile_icon',JSON.stringify(profile_icon))
 
     const movies = [
   { id: 1,  title: '걸캅스',                 content: '전직 경찰과 현직 민원실 경찰이 디지털 성범죄를 쫓는 이야기', avgScore: 3.2, reviewCount: 1, poster: img1 },
