@@ -36,7 +36,7 @@ const Navibar = () => {
         </Link>
 
         <div className='flex items-center gap-1.5 text-lg font-bold'>
-          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
+          <Link to='/movieList' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
             영화 리스트
           </Link>
 
@@ -44,13 +44,6 @@ const Navibar = () => {
             리뷰 리스트
           </Link>
 
-          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
-            탭 3
-          </Link>
-
-          <Link to='/' className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8]'>
-            탭 4
-          </Link>
         </div>
       </div>
 
