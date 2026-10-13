@@ -69,7 +69,7 @@ export const AuthContextPro=({children})=>{
     const movies = [
   { id: 1,  title: '걸캅스',                 content: '전직 경찰과 현직 민원실 경찰이 디지털 성범죄를 쫓는 이야기', avgScore: 3.2, reviewCount: 1, poster: img1, wide_poster: wide1 },
   { id: 2,  title: '귀멸의 칼날: 무한열차편', content: '귀살대원들이 무한열차에서 벌어지는 사건에 맞서는 이야기', avgScore: 4.4, reviewCount: 1, poster: img2, wide_poster: wide2 },
-  { id: 3,  title: '단지의 두사람',           content: '(직접 채워 주세요)', avgScore: 3.5, reviewCount: 1, poster: img3, wide_poster: wide3 },
+  { id: 3,  title: '단지의 두사람',           content: '단지에 두 사람이 있어', avgScore: 3.5, reviewCount: 1, poster: img3, wide_poster: wide3 },
   { id: 4,  title: '도둑들',                 content: '한국과 홍콩 도둑들이 마카오 카지노에서 다이아몬드를 훔치려는 이야기', avgScore: 3.9, reviewCount: 1, poster: img4, wide_poster: wide4 },
   { id: 5,  title: '론 서바이버',             content: '아프가니스탄 작전 중 고립된 네이비실 대원들의 실화 기반 생존기', avgScore: 4.0, reviewCount: 1, poster: img5, wide_poster: wide5 },
   { id: 6,  title: '말할 수 없는 비밀',       content: '음악 학교에서 만난 두 남녀 사이에 숨은 비밀과 사랑 이야기', avgScore: 4.3, reviewCount: 1, poster: img6, wide_poster: wide6 },

@@ -44,6 +44,7 @@ const MainPage = () => {
 
   const navigate=useNavigate()
 
+
   const banner_slots=[
     {x:-1312,w:480,h:270,o:0,z:0},
     {x:-816,w:480,h:270,o:1,z:1},
@@ -132,12 +133,16 @@ const MainPage = () => {
       {alig_review.slice(0,6).map((x)=>{
         const icon_idx=[...String(x.userId)].reduce((a,c)=>a+c.charCodeAt(0),0) % (profile_icon.length || 1)
         const ran_profile=[profile_icon[icon_idx]]
+        const target_movie=movies.find((m)=>m.id===x.movieId)
         return (<div key={x.id} onClick={()=>navigate('/reviewlist',{state:{reviewId:x.id}})} className='flex cursor-pointer items-center gap-4 rounded-3xl bg-gray-100 p-4 transition-transform duration-200 hover:scale-105'>
           <div className='flex w-24 shrink-0 flex-col items-center gap-1'>
           <img src={ran_profile[0]?.profile_icon} className='h-20 w-20 rounded-full object-cover'/>
           <p className='max-w-full truncate text-xs'>{x.userId}</p>
           </div>
           <div className='flex min-w-0 flex-1 flex-col gap-2'>
+          {target_movie && (
+          <p className='w-fit max-w-full truncate rounded bg-gray-300 px-2 py-0.5 text-xs font-semibold text-gray-700'>{target_movie.title}</p>
+          )}
           <div className='flex items-center justify-between gap-2'>
           <h4 className='truncate text-lg font-semibold'>{x.title}</h4>
           <StarDisplay score={x.score} />
