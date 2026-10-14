@@ -28,9 +28,9 @@ const ReviewForm = () => {
       id: Date.now(),
       title,
       content,
-      rating,
-      writeId: currentUser.userId,
-      movieId: currentMovie.movieId,
+      score,
+      userId: currentUser.userId,
+      movieId: 1 //currentMovie.movieId,
     };
 
     reviews.push(newReview);
