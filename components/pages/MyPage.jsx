@@ -32,7 +32,10 @@ export default function MyPage() {
   useEffect(() => {
     loadMyData();
     window.addEventListener('storage', loadMyData);
-    return () => window.removeEventListener('storage', loadMyData);
+    window.addEventListener('local-update', loadMyData);
+    return () => {
+      window.removeEventListener('storage', loadMyData);
+      window.removeEventListener('local-update', loadMyData);}
   }, [currentUser]);
 
   // 로그인되지 않은 경우
