@@ -30,7 +30,7 @@ const SearchBar = () => {
   const selectMovie = (movie) => {
     setSearch('')
     setIsOpen(false)
-    navigate(`/movie:${movie.id}`)
+    navigate(`/movie/:${movie.id}`)
   }
 
   useEffect(() => {

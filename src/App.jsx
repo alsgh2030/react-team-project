@@ -11,7 +11,7 @@ import { AuthContextPro } from "./AuthContextPro";
 import ReviewList from "./components/ReviewList";
 import ReviewForm from "./components/ReviewForm";
 import ReviewEdit from "./components/ReviewEdit";
-import MovieListPage from "./components/pages/MovieLisgPage";
+import MovieListPage from "./components/pages/MovieListPage";
 
 const App = () => {
   return (
@@ -23,7 +23,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/search" element={<SearchBar />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/movie:id" element={<MovieDetail />} />
+          <Route path="/movie/:id" element={<MovieDetail />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/reviewList" element={<ReviewList />} />
           <Route path="/review/create" element={<ReviewForm />} />

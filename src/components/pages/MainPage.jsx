@@ -170,7 +170,7 @@ const MainPage = () => {
                 <img
                   key={x.id}
                   src={x.poster}
-                  onClick={() => navigate(`/movie:${x.id}`)}
+                  onClick={() => navigate(`/movie/:${x.id}`)}
                   className="aspect-[2/3] w-[220px] shrink-0 cursor-pointer rounded-[36px] transition-transform duration-200 hover:scale-105 border-2 border-slate-800 object-cover shadow-[4px_6px_8px_rgba(0,0,0,0.4)]"
                 />
               );
