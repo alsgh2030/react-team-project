@@ -110,6 +110,7 @@ export default function ReviewList({ customReviews }) {
     localStorage.setItem('reviews', JSON.stringify(updatedReviews));
     // setReviews(updatedReviews);
     loadData();
+    window.dispatchEvent(new Event('local-update'));
     setEditingReviewId(null);
   };
 
@@ -134,6 +135,7 @@ export default function ReviewList({ customReviews }) {
     localStorage.setItem('comments', JSON.stringify(updatedComments));
     // setComments(updatedComments);
     loadData();
+    window.dispatchEvent(new Event('local-update'));
     setCommentInput('');
   };
 
@@ -171,6 +173,7 @@ export default function ReviewList({ customReviews }) {
     localStorage.setItem('comments', JSON.stringify(updatedComments));
     // setComments(updatedComments);
     loadData();
+    window.dispatchEvent(new Event('local-update'));
   };
 
   return (
