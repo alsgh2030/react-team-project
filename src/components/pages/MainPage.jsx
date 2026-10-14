@@ -39,7 +39,7 @@ const MainPage = () => {
   const [reviews, setReviews] = useState(
     JSON.parse(localStorage.getItem('reviews')) || []
   )
-  const { currentUser } = useAuth()
+  const { currentUser, getMovieStats } = useAuth()
 
   const shuffled = () => {
     const suf_mov = movies.map((x) => ({ ...x, key: Math.random() }))
@@ -213,7 +213,7 @@ const MainPage = () => {
     setReviews(updatedReviews)
   }
 
-  const alig_review = [...reviews].sort((x, y) => x.id - y.id)
+  const alig_review = [...reviews].sort((x, y) => y.id - x.id)
   const profile_icon = JSON.parse(localStorage.getItem('profile_icon')) || []
   const comments = JSON.parse(localStorage.getItem('comments')) || []
 
@@ -315,7 +315,7 @@ const MainPage = () => {
               </div>
               <div className='flex h-[76px] flex-col items-center justify-center bg-white px-6 text-center'>
                 <p className='text-lg font-black text-rose-600'>2주 전은 예진님의 생일이에요!</p>
-                <p className='mt-0.5 text-sm text-neutral-600'>민호 무비 가족 모두가 축하합니다</p>
+                <p className='mt-0.5 text-sm text-neutral-600'>민호 무비 일동 모두가 축하합니다</p>
               </div>
               <div className='flex divide-x divide-neutral-700 bg-neutral-900 text-sm text-neutral-300'>
                 <button onClick={() => hidePopup24h('birthday')} className='flex-1 cursor-pointer py-3 transition-colors hover:bg-neutral-800 hover:text-white'>24시간 동안 보지 않기</button>
@@ -334,6 +334,7 @@ const MainPage = () => {
           {[...random_movies].sort((a, b) => a.id - b.id).map((x) => {
             const pos = random_movies.findIndex((m) => m.id === x.id)
             const slot = banner_slots[pos]
+            const stats = getMovieStats(x.id)
 
             // 양옆 배너를 누르면 그 포스터가 가운데로, 가운데 배너를 누르면 상세 페이지로
             const onBanner = () => {
@@ -376,7 +377,11 @@ const MainPage = () => {
                   <span className='mt-1 truncate text-[34px] font-black tracking-tight'>{x.title}</span>
                   <span className='mt-1 line-clamp-1 text-sm text-neutral-200'>{x.content}</span>
                   <span className='mt-2 text-sm text-neutral-200'>
-                    <span className='font-bold text-rose-300'>★ {Number(x.avgScore).toFixed(1)}</span> · 리뷰 {x.reviewCount}
+                    {stats.count > 0 ? (
+                      <><span className='font-bold text-rose-300'>★ {stats.avg.toFixed(1)}</span> · 리뷰 {stats.count}</>
+                    ) : (
+                      <span className='text-neutral-300'>리뷰 없음</span>
+                    )}
                   </span>
                 </div>
               </div>
@@ -416,7 +421,9 @@ const MainPage = () => {
               transition: pop_fx.anim ? 'transform 400ms ease' : 'none',
             }}
           >
-            {top_movie_List.map((x) => (
+            {top_movie_List.map((x) => {
+              const stats = getMovieStats(x.id)
+              return (
               <div key={x.id} className='group w-[220px] shrink-0'>
               <img
                 src={x.poster}
@@ -425,10 +432,15 @@ const MainPage = () => {
               />
               <p className='mt-3 truncate text-[15px] font-bold'>{x.title}</p>
               <p className='mt-0.5 text-[13px] text-neutral-500 dark:text-neutral-400'>
-                평균 <span className='font-bold text-rose-600'>★ {Number(x.avgScore).toFixed(1)}</span>
+                {stats.count > 0 ? (
+                  <>평균 <span className='font-bold text-rose-600'>★ {stats.avg.toFixed(1)}</span> · 리뷰 {stats.count}</>
+                ) : (
+                  '리뷰 없음'
+                )}
               </p>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
 

@@ -110,8 +110,18 @@ if(!localStorage.getItem('reviews')){
     localStorage.setItem('reviews',JSON.stringify(reviews))
 }
 
+    // 영화별 평균 별점 / 리뷰 수: 저장된 reviews에서 그때그때 계산
+    // 리뷰가 없으면 avg는 null, count는 0
+    const getMovieStats=(movieId)=>{
+        const allReviews=JSON.parse(localStorage.getItem('reviews') || '[]')
+        const movieReviews=allReviews.filter((r)=>String(r.movieId)===String(movieId))
+        if(movieReviews.length===0) return { avg:null, count:0 }
+        const sum=movieReviews.reduce((acc,r)=>acc+Number(r.score || 0),0)
+        return { avg:Math.round((sum/movieReviews.length)*10)/10, count:movieReviews.length }
+    }
+
     return(
-        <AuthContext.Provider value={{currentUser,setCurrentUser,logout}}>
+        <AuthContext.Provider value={{currentUser,setCurrentUser,logout,getMovieStats}}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Star } from 'lucide-react'
+import { useAuth } from '../../AuthContextPro'
 
 const MovieListPage = () => {
-  const movies = JSON.parse(localStorage.getItem('movies')) || []
+  const { getMovieStats } = useAuth()
+  // 영화마다 실제 리뷰로 계산한 평균 별점 / 리뷰 수를 붙임
+  const movies = (JSON.parse(localStorage.getItem('movies')) || []).map((m) => ({ ...m, stats: getMovieStats(m.id) }))
   const navigate = useNavigate()
 
   const [sort_type, setSortType] = useState('default')
@@ -16,8 +19,8 @@ const MovieListPage = () => {
   ]
 
   const sorted_movies = [...movies].sort((x, y) => {
-    if (sort_type === 'score') return y.avgScore - x.avgScore
-    if (sort_type === 'review') return y.reviewCount - x.reviewCount
+    if (sort_type === 'score') return (y.stats.avg ?? -1) - (x.stats.avg ?? -1)
+    if (sort_type === 'review') return y.stats.count - x.stats.count
     if (sort_type === 'title') return x.title.localeCompare(y.title, 'ko')
     return x.id - y.id
   })
@@ -66,9 +69,15 @@ const MovieListPage = () => {
             </div>
             <p className='mt-3 truncate text-[15px] font-bold'>{x.title}</p>
             <div className='mt-0.5 flex items-center gap-1 text-[13px] text-neutral-500 dark:text-neutral-400'>
-              <Star size={13} className='fill-rose-600 text-rose-600' />
-              <span className='font-bold text-rose-600'>{Number(x.avgScore).toFixed(1)}</span>
-              <span className='ml-1'>· 리뷰 {x.reviewCount}</span>
+              {x.stats.count > 0 ? (
+                <>
+                  <Star size={13} className='fill-rose-600 text-rose-600' />
+                  <span className='font-bold text-rose-600'>{x.stats.avg.toFixed(1)}</span>
+                  <span className='ml-1'>· 리뷰 {x.stats.count}</span>
+                </>
+              ) : (
+                <span>리뷰 없음</span>
+              )}
             </div>
           </div>
         ))}
