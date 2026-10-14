@@ -51,10 +51,7 @@ const AuthContext = createContext();
 
 export const AuthContextPro=({children})=>{
     const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem('currentUser')) || {
-        userId: 'admin',
-        username: 'admin'
-    }
+    JSON.parse(localStorage.getItem('currentUser')) || null
     );
 
 

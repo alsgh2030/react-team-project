@@ -8,7 +8,7 @@ const StarRating = ({ rating, setRating }) => {
   const activeValue = hover || rating; // 현재 화면에 보여줄 별점 기준
 
   return (
-    <div className="flex items-center gap-2 p-4 bg-white rounded-lg w-fit">
+    <div className="flex items-center gap-2 p-4 bg-white dark:bg-[#252525] rounded-lg w-fit transition-colors duration-200">
       <div className="flex gap-1" onMouseLeave={() => setHover(0)}>
         {[...Array(totalStars)].map((_, index) => {
           const starValue = index + 1; // 현재 별의 기준 정수 값 (1, 2, 3, 4, 5)
@@ -25,7 +25,7 @@ const StarRating = ({ rating, setRating }) => {
               {/* [기본 배경] 비어있는 회색 별 */}
               <Star
                 size={32}
-                className="text-[#e4e5e9] fill-[#e4e5e9]"
+                className="text-[#e4e5e9] fill-[#e4e5e9] dark:text-[#444] dark:fill-[#444]"
               />
 
               {/* [오버레이] 조건에 따라 채워지는 노란색 별 */}
@@ -59,7 +59,7 @@ const StarRating = ({ rating, setRating }) => {
       </div>
 
       {/* 점수 표시 */}
-      <span className="ml-2 text-lg font-bold text-gray-700 min-w-[45px]">
+      <span className="ml-2 text-lg font-bold text-gray-700 dark:text-gray-200 min-w-[45px]">
         {activeValue.toFixed(1)}
       </span>
     </div>

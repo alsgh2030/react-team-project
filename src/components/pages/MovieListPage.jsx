@@ -23,15 +23,24 @@ const MovieListPage = () => {
   })
 
   return (
-    <div className='bg-white px-10 pb-16 pt-6'>
-      <h3 className='inline-block border-2 border-black bg-white py-2 pl-6 pr-10 text-xl font-bold' style={{clipPath:'polygon(0 0, 94% 0, 100% 30%, 100% 100%, 0 100%)'}}>영화 리스트</h3>
+    <div className='min-h-screen bg-white px-10 pb-16 pt-6 text-black transition-colors duration-200 dark:bg-[#181818] dark:text-white'>
+      <h3 
+        className='inline-block border-2 border-black bg-white py-2 pl-6 pr-10 text-xl font-bold text-black dark:border-gray-500 dark:bg-[#252525] dark:text-white' 
+        style={{clipPath:'polygon(0 0, 94% 0, 100% 30%, 100% 100%, 0 100%)'}}
+      >
+        영화 리스트
+      </h3>
 
       <div className='mt-5 flex gap-2'>
         {sort_tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setSortType(t.key)}
-            className={'cursor-pointer rounded-full border-2 border-black px-4 py-1 text-sm font-semibold transition-colors ' + (sort_type === t.key ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200')}
+            className={'cursor-pointer rounded-full border-2 px-4 py-1 text-sm font-semibold transition-colors ' + 
+              (sort_type === t.key 
+                ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' 
+                : 'border-black bg-white text-black hover:bg-gray-200 dark:border-gray-600 dark:bg-[#252525] dark:text-white dark:hover:bg-[#333]')
+            }
           >
             {t.label}
           </button>
@@ -39,19 +48,19 @@ const MovieListPage = () => {
       </div>
 
       {sorted_movies.length === 0 && (
-        <p className='py-20 text-center text-lg text-gray-600'>등록된 영화가 없습니다.</p>
+        <p className='py-20 text-center text-lg text-gray-600 dark:text-gray-400'>등록된 영화가 없습니다.</p>
       )}
 
       <div className='mt-6 grid grid-cols-5 gap-x-6 gap-y-8'>
         {sorted_movies.map((x) => (
-          <div key={x.id} onClick={() => navigate(`/movie:${x.id}`)} className='group cursor-pointer'>
+          <div key={x.id} onClick={() => navigate(`/movie/${x.id}`)} className='group cursor-pointer'>
             <img
               src={x.poster}
               alt={x.title}
-              className='aspect-[2/3] w-full rounded-2xl border-2 border-slate-800 object-cover shadow-[3px_5px_8px_rgba(0,0,0,0.35)] transition-transform duration-200 group-hover:scale-105'
+              className='aspect-[2/3] w-full rounded-2xl border-2 border-slate-800 object-cover shadow-[3px_5px_8px_rgba(0,0,0,0.35)] transition-transform duration-200 group-hover:scale-105 dark:border-gray-600'
             />
             <p className='mt-3 truncate text-base font-semibold'>{x.title}</p>
-            <div className='flex items-center gap-1 text-sm text-gray-600'>
+            <div className='flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400'>
               <Star size={14} className='fill-yellow-400 text-yellow-400' />
               <span>{Number(x.avgScore).toFixed(1)}</span>
               <span className='ml-1'>· 리뷰 {x.reviewCount}</span>
