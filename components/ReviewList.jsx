@@ -108,7 +108,8 @@ export default function ReviewList({ customReviews }) {
     });
 
     localStorage.setItem('reviews', JSON.stringify(updatedReviews));
-    setReviews(updatedReviews);
+    // setReviews(updatedReviews);
+    loadData();
     setEditingReviewId(null);
   };
 
@@ -131,7 +132,8 @@ export default function ReviewList({ customReviews }) {
 
     const updatedComments = [...allComments, newComment];
     localStorage.setItem('comments', JSON.stringify(updatedComments));
-    setComments(updatedComments);
+    // setComments(updatedComments);
+    loadData();
     setCommentInput('');
   };
 
@@ -167,7 +169,8 @@ export default function ReviewList({ customReviews }) {
     const updatedComments = allComments.filter((c) => c.id !== commentId);
 
     localStorage.setItem('comments', JSON.stringify(updatedComments));
-    setComments(updatedComments);
+    // setComments(updatedComments);
+    loadData();
   };
 
   return (
