@@ -7,7 +7,6 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const { setCurrentUser } = useAuth();
-
   const navigate = useNavigate();
 
   const onsubmit2 = (e) => {
@@ -39,11 +38,14 @@ const LoginPage = () => {
           placeholder="아이디"
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
+          className="placeholder:text-gray-500 dark:placeholder:text-gray-400"
         />
         <input
+          type="password"
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="placeholder:text-gray-500 dark:placeholder:text-gray-400"
         />
         <button>로그인</button>
       </form>
