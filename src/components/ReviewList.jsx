@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Star, MessageSquare, Trash2, Edit } from 'lucide-react';
 import { useAuth } from '../AuthContextPro';
+import Rating from "./Rating";
 
 export default function ReviewList({ customReviews }) {
   const { currentUser } = useAuth();
@@ -109,7 +110,6 @@ export default function ReviewList({ customReviews }) {
     });
 
     localStorage.setItem('reviews', JSON.stringify(updatedReviews));
-    // setReviews(updatedReviews);
     loadData();
     window.dispatchEvent(new Event('local-update'));
     setEditingReviewId(null);
@@ -134,7 +134,6 @@ export default function ReviewList({ customReviews }) {
 
     const updatedComments = [...allComments, newComment];
     localStorage.setItem('comments', JSON.stringify(updatedComments));
-    // setComments(updatedComments);
     loadData();
     window.dispatchEvent(new Event('local-update'));
     setCommentInput('');
@@ -172,15 +171,14 @@ export default function ReviewList({ customReviews }) {
     const updatedComments = allComments.filter((c) => c.id !== commentId);
 
     localStorage.setItem('comments', JSON.stringify(updatedComments));
-    // setComments(updatedComments);
     loadData();
     window.dispatchEvent(new Event('local-update'));
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div className="max-w-[800px] mx-auto p-5 transition-colors duration-200">
       {displayReviews.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#888', padding: '40px' }}>등록된 리뷰가 없습니다.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400 py-10">등록된 리뷰가 없습니다.</p>
       ) : (
         displayReviews.map((review) => {
           const targetMovie = movies.find((m) => m.id === review.movieId);
@@ -191,42 +189,27 @@ export default function ReviewList({ customReviews }) {
           return (
             <div
               key={review.id}
-              style={{
-                border: '1px solid #e0e0e0',
-                borderRadius: '8px',
-                padding: '20px',
-                marginBottom: '16px',
-                backgroundColor: '#fff',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-              }}
+              className="border border-[#e0e0e0] dark:border-gray-700 rounded-lg p-5 mb-4 bg-white dark:bg-[#252525] text-black dark:text-white shadow-sm transition-colors duration-200"
             >
               {/* 수정 모드인 경우 */}
               {editingReviewId === review.id ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div className="flex flex-col gap-2.5">
                   <input
                     type="text"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                     placeholder="제목"
-                    style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-[#333] text-black dark:text-white"
                   />
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="flex gap-2.5 items-center">
                     <label>별점: </label>
-                    <select
-                      value={editScore}
-                      onChange={(e) => setEditScore(e.target.value)}
-                      style={{ padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
-                    >
-                      {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>{num}점</option>
-                      ))}
-                    </select>
+                    <Rating rating={editScore} setRating={setEditScore} />
                     <input
                       type="text"
                       value={editTag}
                       onChange={(e) => setEditTag(e.target.value)}
                       placeholder="#태그"
-                      style={{ padding: '6px', border: '1px solid #ccc', borderRadius: '4px', flex: 1 }}
+                      className="p-1.5 border border-gray-300 dark:border-gray-600 rounded flex-1 bg-white dark:bg-[#333] text-black dark:text-white"
                     />
                   </div>
                   <textarea
@@ -234,18 +217,18 @@ export default function ReviewList({ customReviews }) {
                     onChange={(e) => setEditContent(e.target.value)}
                     placeholder="내용"
                     rows={4}
-                    style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical' }}
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded resize-vertical bg-white dark:bg-[#333] text-black dark:text-white"
                   />
-                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                  <div className="flex gap-2 justify-end">
                     <button
                       onClick={() => handleSaveEdit(review.id)}
-                      style={{ padding: '6px 12px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                      className="px-3 py-1.5 bg-blue-600 text-white border-none rounded cursor-pointer hover:bg-blue-700"
                     >
                       저장
                     </button>
                     <button
                       onClick={() => setEditingReviewId(null)}
-                      style={{ padding: '6px 12px', backgroundColor: '#6c757d', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                      className="px-3 py-1.5 bg-gray-600 text-white border-none rounded cursor-pointer hover:bg-gray-700"
                     >
                       취소
                     </button>
@@ -254,56 +237,56 @@ export default function ReviewList({ customReviews }) {
               ) : (
                 /* 일반 조회 모드 */
                 <>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <div className="flex justify-between items-center mb-2.5">
                     <div>
-                      <span style={{ fontWeight: 'bold', marginRight: '8px', fontSize: '1rem' }}>{review.userId}</span>
+                      <span className="font-bold mr-2 text-base">{review.userId}</span>
                       {targetMovie && (
-                        <span style={{ fontSize: '0.85rem', color: '#555', backgroundColor: '#f0f0f0', padding: '2px 8px', borderRadius: '4px' }}>
+                        <span className="text-xs text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-[#383838] px-2 py-0.5 rounded">
                           {targetMovie.title}
                         </span>
                       )}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#ffb400' }}>
+                    <div className="flex items-center gap-1 text-[#ffb400]">
                       <Star size={18} fill="#ffb400" />
-                      <span style={{ fontWeight: 'bold', fontSize: '1rem', color: '#333' }}>{review.score}</span>
+                      <span className="font-bold text-base text-black dark:text-white">{review.score}</span>
                     </div>
                   </div>
 
-                  <h3 style={{ margin: '8px 0', fontSize: '1.1rem' }}>{review.title}</h3>
-                  <p style={{ margin: '0 0 10px 0', color: '#444', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{review.content}</p>
+                  <h3 className="my-2 text-lg font-bold">{review.title}</h3>
+                  <p className="my-0 mb-2.5 text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">{review.content}</p>
 
                   {review.tag && (
-                    <div style={{ marginBottom: '12px' }}>
-                      <span style={{ color: '#007bff', fontSize: '0.85rem' }}>#{review.tag}</span>
+                    <div className="mb-3">
+                      <span className="text-blue-500 dark:text-blue-400 text-xs">#{review.tag}</span>
                     </div>
                   )}
 
                   {/* 하단 버튼 및 수정/삭제 */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f0f0f0', paddingTop: '10px' }}>
-                    <div style={{ display: 'flex', gap: '16px' }}>
+                  <div className="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-2.5">
+                    <div className="flex gap-4">
                       <button
                         onClick={() => handleLikeReview(review.id)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        className="background-none border-none cursor-pointer flex items-center gap-1 bg-transparent"
                       >
                         <Heart size={18} color={isLikedByMe ? '#ff4d4f' : '#666'} fill={isLikedByMe ? '#ff4d4f' : 'none'} />
-                        <span style={{ fontSize: '0.9rem', color: '#666' }}>{review.like ? review.like.length : 0}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{review.like ? review.like.length : 0}</span>
                       </button>
 
                       <button
                         onClick={() => setActiveCommentReviewId(activeCommentReviewId === review.id ? null : review.id)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        className="background-none border-none cursor-pointer flex items-center gap-1 bg-transparent"
                       >
-                        <MessageSquare size={18} color="#666" />
-                        <span style={{ fontSize: '0.9rem', color: '#666' }}>{reviewComments.length}</span>
+                        <MessageSquare size={18} className="text-gray-600 dark:text-gray-400" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{reviewComments.length}</span>
                       </button>
                     </div>
 
                     {isMyReview && (
-                      <div style={{ display: 'flex', gap: '10px' }}>
-                        <button onClick={() => startEditReview(review)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                          <Edit size={18} color="#666" />
+                      <div className="flex gap-2.5">
+                        <button onClick={() => startEditReview(review)} className="bg-transparent border-none cursor-pointer">
+                          <Edit size={18} className="text-gray-600 dark:text-gray-400 hover:text-blue-500" />
                         </button>
-                        <button onClick={() => handleDeleteReview(review.id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                        <button onClick={() => handleDeleteReview(review.id)} className="bg-transparent border-none cursor-pointer">
                           <Trash2 size={18} color="#ff4d4f" />
                         </button>
                       </div>
@@ -312,50 +295,50 @@ export default function ReviewList({ customReviews }) {
 
                   {/* 댓글 창 */}
                   {activeCommentReviewId === review.id && (
-                    <div style={{ marginTop: '14px', padding: '12px', backgroundColor: '#f9f9f9', borderRadius: '6px' }}>
+                    <div className="mt-3.5 p-3 bg-gray-50 dark:bg-[#1e1e1e] rounded-md transition-colors duration-200">
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
                           handleAddComment(review.id);
                         }}
-                        style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}
+                        className="flex gap-2 mb-3"
                       >
                         <input
                           type="text"
                           placeholder="댓글을 입력하세요..."
                           value={commentInput}
                           onChange={(e) => setCommentInput(e.target.value)}
-                          style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                          className="flex-1 p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333] text-black dark:text-white placeholder:text-gray-400"
                         />
-                        <button type="submit" style={{ padding: '8px 14px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                        <button type="submit" className="px-3.5 py-2 bg-blue-600 text-white border-none rounded cursor-pointer hover:bg-blue-700">
                           등록
                         </button>
                       </form>
 
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div className="flex flex-col gap-2">
                         {reviewComments.length === 0 ? (
-                          <p style={{ fontSize: '0.85rem', color: '#888', margin: 0 }}>작성된 댓글이 없습니다.</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 m-0">작성된 댓글이 없습니다.</p>
                         ) : (
                           reviewComments.map((comment) => {
                             const isCommentLiked = currentUser && Array.isArray(comment.like) && comment.like.includes(currentUser.userId);
                             const isMyComment = currentUser && comment.userId === currentUser.userId;
 
                             return (
-                              <div key={comment.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '8px 12px', borderRadius: '4px', border: '1px solid #eee' }}>
+                              <div key={comment.id} className="flex justify-between items-center bg-white dark:bg-[#2a2a2a] p-2 px-3 rounded border border-gray-200 dark:border-gray-700">
                                 <div>
-                                  <strong style={{ marginRight: '8px', fontSize: '0.85rem' }}>{comment.userId}</strong>
-                                  <span style={{ fontSize: '0.9rem' }}>{comment.content}</span>
+                                  <strong className="mr-2 text-xs">{comment.userId}</strong>
+                                  <span className="text-sm">{comment.content}</span>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div className="flex items-center gap-2.5">
                                   <button
                                     onClick={() => handleLikeComment(comment.id)}
-                                    style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}
+                                    className="bg-transparent border-none cursor-pointer flex items-center gap-0.5"
                                   >
                                     <Heart size={14} color={isCommentLiked ? '#ff4d4f' : '#888'} fill={isCommentLiked ? '#ff4d4f' : 'none'} />
-                                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{comment.like ? comment.like.length : 0}</span>
+                                    <span className="text-xs text-gray-600 dark:text-gray-400">{comment.like ? comment.like.length : 0}</span>
                                   </button>
                                   {isMyComment && (
-                                    <button onClick={() => handleDeleteComment(comment.id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                                    <button onClick={() => handleDeleteComment(comment.id)} className="bg-transparent border-none cursor-pointer">
                                       <Trash2 size={14} color="#ff4d4f" />
                                     </button>
                                   )}
