@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Star, MessageSquare, Trash2, Edit } from 'lucide-react';
 import { useAuth } from '../AuthContextPro';
-import { useLocation, useNavigate } from 'react-router-dom'
 
 export default function ReviewList({ customReviews }) {
   const { currentUser } = useAuth();
@@ -33,28 +32,11 @@ export default function ReviewList({ customReviews }) {
     setMovies(savedMovies);
   };
 
-  const location = useLocation()
-  const navigate = useNavigate()
-
   useEffect(() => {
     loadData();
     window.addEventListener('storage', loadData);
     return () => window.removeEventListener('storage', loadData);
   }, []);
-
-  useEffect(() => {
-  const id = location.state?.reviewId
-  if (!id) return
-  const el = document.getElementById(`review-${id}`)
-  if (!el) return                                   // 리뷰가 아직 안 그려졌으면 다음 렌더에서 재시도
-
-  window.scrollTo(0, 0)                             // 항상 최상단에서 시작
-  const t = setTimeout(() => {
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' })   // 거기서 아래로 내려오기
-    navigate(location.pathname, { replace: true, state: null })  // 새로고침/뒤로가기 때 다시 실행되지 않게 비움
-  }, 100)
-  return () => clearTimeout(t)
-}, [location.state, reviews])
 
   // 외부(MyPage 등)에서 props로 reviews를 넘겨주면 그것을 우선 사용, 없으면 전체 리뷰 사용
   const displayReviews = customReviews || reviews;
@@ -81,6 +63,7 @@ export default function ReviewList({ customReviews }) {
 
     localStorage.setItem('reviews', JSON.stringify(updatedReviews));
     setReviews(updatedReviews);
+    window.dispatchEvent(new Event('local-update'));
   };
 
   // 2. 리뷰 삭제
@@ -207,7 +190,7 @@ export default function ReviewList({ customReviews }) {
 
           return (
             <div
-              key={review.id} id={`review-${review.id}`}
+              key={review.id}
               style={{
                 border: '1px solid #e0e0e0',
                 borderRadius: '8px',
