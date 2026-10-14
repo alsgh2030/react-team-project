@@ -19,46 +19,47 @@ const Navibar = ({ darkMode, setDarkMode }) => {
 
   return (
     <nav
-      className={`w-full min-h-[76px] flex flex-wrap justify-between items-center gap-3 px-5 py-3 border-2 rounded-[22px] shadow-[5px_5px_0_#111] font-sans transition-colors duration-200 ${
+      className={`sticky top-0 z-40 w-full border-b font-sans transition-colors duration-200 ${
         darkMode
-          ? 'bg-[#222222] text-white border-white'
-          : 'bg-white text-black border-black'
+          ? 'bg-[#181818]/95 text-neutral-100 border-neutral-800'
+          : 'bg-white/95 text-neutral-900 border-neutral-200'
       }`}
     >
+      <div className='mx-auto flex min-h-16 max-w-[1200px] flex-wrap items-center justify-between gap-3 px-6 py-2'>
       {/* 왼쪽: 로고 + 메뉴 */}
-      <div className='flex items-center gap-7'>
+      <div className='flex items-center gap-8'>
         <Link
           to='/'
-          className='flex items-center gap-2.5 py-1.5 pl-2 pr-3.5 bg-black rounded-[14px]'
+          className='flex items-center gap-2'
         >
-          <span className='flex items-center justify-center w-[34px] h-[34px] bg-[#FFD93B] rounded-[10px]'>
+          <span className='flex items-center justify-center w-7 h-7 bg-rose-600 rounded-lg'>
             <svg
-              width='20'
-              height='20'
+              width='16'
+              height='16'
               viewBox='0 0 24 24'
-              fill='#111'
+              fill='#fff'
               aria-hidden='true'
             >
               <path d='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z' />
             </svg>
           </span>
 
-          <span className='text-[22px] font-black text-white tracking-tight whitespace-nowrap'>
-            민호 무비
+          <span className='text-[21px] font-black tracking-tight whitespace-nowrap'>
+            민호 <span className='text-rose-600'>무비</span>
           </span>
         </Link>
 
-        <div className='flex items-center gap-1.5 text-lg font-bold'>
+        <div className='flex items-center gap-1 text-[15px] font-medium'>
           <Link
             to='/movieList'
-            className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8] hover:text-black'
+            className={`px-3 py-2 rounded-lg transition-colors ${darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100'}`}
           >
             영화 리스트
           </Link>
 
           <Link
             to='/reviewList'
-            className='px-4 py-2.5 rounded-xl hover:bg-[#FFF1A8] hover:text-black'
+            className={`px-3 py-2 rounded-lg transition-colors ${darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100'}`}
           >
             리뷰 리스트
           </Link>
@@ -66,7 +67,7 @@ const Navibar = ({ darkMode, setDarkMode }) => {
       </div>
 
       {/* 오른쪽: 검색창 + 다크모드 + 계정 버튼 */}
-      <div className='flex flex-wrap items-center gap-3'>
+      <div className='flex flex-wrap items-center gap-2'>
         <SearchBar />
 
         {/* 다크모드 전환 버튼 */}
@@ -75,23 +76,23 @@ const Navibar = ({ darkMode, setDarkMode }) => {
           onClick={() => setDarkMode(!darkMode)}
           aria-label={darkMode ? '라이트 모드로 전환' : '다크 모드로 전환'}
           title={darkMode ? '라이트 모드' : '다크 모드'}
-          className={`flex items-center justify-center w-11 h-11 border-2 rounded-xl transition-colors ${
+          className={`flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors ${
             darkMode
-              ? 'border-white bg-[#333333] text-[#FFD93B] hover:bg-[#444444]'
-              : 'border-black bg-white text-black hover:bg-[#FFF1A8]'
+              ? 'text-amber-300 hover:bg-neutral-800'
+              : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900'
           }`}
         >
-          {darkMode ? <Sun size={21} /> : <Moon size={21} />}
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
         {!currentUser && (
-          <div className='flex items-center gap-2.5'>
+          <div className='flex items-center gap-1'>
             <Link
               to='/login'
-              className={`flex items-center h-11 px-5 border-2 rounded-xl text-[15px] font-bold ${
+              className={`flex items-center h-9 px-3 rounded-lg text-sm font-medium transition-colors ${
                 darkMode
-                  ? 'border-white bg-[#333333] text-white hover:bg-[#444444]'
-                  : 'border-black bg-white text-black hover:bg-slate-100'
+                  ? 'text-neutral-300 hover:text-white'
+                  : 'text-neutral-600 hover:text-neutral-900'
               }`}
             >
               로그인
@@ -99,7 +100,7 @@ const Navibar = ({ darkMode, setDarkMode }) => {
 
             <Link
               to='/signup'
-              className='flex items-center h-11 px-5 border-2 border-black rounded-xl bg-[#FFD93B] text-black text-[15px] font-bold hover:brightness-95'
+              className='flex items-center h-9 px-4 rounded-lg bg-rose-600 text-white text-sm font-bold transition-colors hover:bg-rose-700'
             >
               회원가입
             </Link>
@@ -107,22 +108,31 @@ const Navibar = ({ darkMode, setDarkMode }) => {
         )}
 
         {currentUser && (
-          <div className='flex items-center gap-2.5'>
+          <div className='flex items-center gap-1'>
             <button
               onClick={to_myPage}
-              className='h-11 px-5 border-2 border-black rounded-xl bg-green-700 text-[15px] font-bold text-white cursor-pointer hover:bg-green-800'
+              className={`h-9 px-4 rounded-lg text-sm font-bold cursor-pointer transition-colors ${
+                darkMode
+                  ? 'bg-neutral-800 text-white hover:bg-neutral-700'
+                  : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+              }`}
             >
               마이페이지
             </button>
 
             <button
               onClick={logout1}
-              className='h-11 px-5 border-2 border-black rounded-xl bg-red-600 text-[15px] font-bold text-white cursor-pointer hover:bg-red-700'
+              className={`h-9 px-3 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
+                darkMode
+                  ? 'text-neutral-400 hover:text-rose-400'
+                  : 'text-neutral-500 hover:text-rose-600'
+              }`}
             >
               로그아웃
             </button>
           </div>
         )}
+      </div>
       </div>
     </nav>
   )

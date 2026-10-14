@@ -33,26 +33,28 @@ const EditreviewPage = () => {
     navigate("/reviewList");
   };
   return (
-    <div className="max-w-wl mx-auto mt-10 bg-white p-6 rounded shadow">
-      <h1 className="text-xl font-bold mb-4">게시글 수정</h1>
+    <div className="min-h-[calc(100vh-64px)] bg-[#f2f3f6] px-6 py-12 dark:bg-[#181818]">
+    <div className="max-w-[640px] mx-auto bg-white p-8 rounded-2xl border border-neutral-200 text-neutral-900 dark:bg-[#222222] dark:text-white dark:border-neutral-800">
+      <h1 className="text-2xl font-bold tracking-tight mb-6 pb-5 border-b border-neutral-100 dark:border-neutral-800">게시글 수정</h1>
 
-      <form onSubmit={onSubmit1}>
+      <form onSubmit={onSubmit1} className="flex flex-col gap-5">
         <input
-          className="border w-full p-2 mb-3 rounded"
+          className="h-12 w-full px-4 border border-neutral-300 rounded-xl outline-none transition focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 dark:border-neutral-700"
           value={review.title}
           onChange={(e) => setReview({ ...review, title: e.target.value })}
         />
         <Rating rating={rating} setRating={setRating} />
         <textarea
-          className="border w-full p-2 mb-3 rounded h-40"
+          className="h-44 w-full p-4 border border-neutral-300 rounded-xl resize-y outline-none transition focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 dark:border-neutral-700"
           value={review.content}
           onChange={(e) => setReview({ ...review, content: e.target.value })}
         />
 
-        <button className="bg-green-500 text-white px-4 py-2 rounded">
+        <button className="h-12 self-end px-8 rounded-xl bg-rose-600 text-white font-bold cursor-pointer transition-colors hover:bg-rose-700">
           수정
         </button>
       </form>
+    </div>
     </div>
   );
 };

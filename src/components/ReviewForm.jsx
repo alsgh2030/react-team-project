@@ -43,26 +43,37 @@ const ReviewForm = () => {
   };
 
   return (
-    <div className="max-w-wl mx-auto mt-10 bg-white p-6 rounded shadow border-2 border-black dark:bg-[#252525] dark:text-white dark:border-white transition-colors duration-200">
-      <h1 className="text-xl font-bold mb-4 font-sans">리뷰 작성</h1>
-      <form onSubmit={onSubmitReview}>
+    <div className="min-h-[calc(100vh-64px)] bg-[#f2f3f6] px-6 py-12 dark:bg-[#181818]">
+    <div className="max-w-[640px] mx-auto bg-white p-8 rounded-2xl border border-neutral-200 text-neutral-900 dark:bg-[#222222] dark:text-white dark:border-neutral-800 transition-colors duration-200">
+      <h1 className="text-2xl font-bold tracking-tight mb-6 pb-5 border-b border-neutral-100 dark:border-neutral-800">리뷰 작성</h1>
+      <form onSubmit={onSubmitReview} className="flex flex-col gap-5">
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-sm text-neutral-500 dark:text-neutral-400">이 영화 어떠셨나요?</span>
+          <Rating rating={score} setRating={setScore} />
+        </div>
+        <div className="flex flex-col gap-2">
+        <label className="text-sm font-bold">제목</label>
         <input
           placeholder="제목"
-          className="border-2 border-black rounded-[22px] w-full p-2 mb-3 shadow-[5px_5px_0_#111] font-sans bg-white text-black placeholder:text-gray-500 dark:bg-[#333333] dark:text-white dark:border-white dark:placeholder:text-gray-400"
+          className="h-12 w-full px-4 border border-neutral-300 rounded-xl bg-white text-neutral-900 placeholder:text-neutral-400 outline-none transition focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 dark:bg-[#2a2a2a] dark:text-white dark:border-neutral-700"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <Rating rating={score} setRating={setScore} />
+        </div>
+        <div className="flex flex-col gap-2">
+        <label className="text-sm font-bold">내용</label>
         <textarea
           placeholder="내용"
-          className="border-2 border-black rounded-[22px] w-full p-2 mb-3 h-40 shadow-[5px_5px_0_#111] font-sans bg-white text-black placeholder:text-gray-500 dark:bg-[#333333] dark:text-white dark:border-white dark:placeholder:text-gray-400"
+          className="h-44 w-full p-4 border border-neutral-300 rounded-xl bg-white text-neutral-900 placeholder:text-neutral-400 resize-y outline-none transition focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 dark:bg-[#2a2a2a] dark:text-white dark:border-neutral-700"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-        <button className="bg-white border-2 border-black rounded-[22px] text-black px-4 py-2 shadow-[5px_5px_0_#111] font-sans cursor-pointer hover:bg-gray-100 dark:bg-[#444] dark:text-white dark:border-white dark:hover:bg-[#555]">
+        </div>
+        <button className="h-12 self-end px-8 rounded-xl bg-rose-600 text-white font-bold cursor-pointer transition-colors hover:bg-rose-700">
           작성
         </button>
       </form>
+    </div>
     </div>
   );
 };

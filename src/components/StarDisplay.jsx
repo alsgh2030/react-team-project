@@ -10,9 +10,9 @@ const StarDisplay = ({ score = 0, size = 20 }) => {
 
         return (
           <div key={n} className='relative' style={{ width: size, height: size }}>
-            <Star size={size} className='text-[#e4e5e9] fill-[#e4e5e9]' />
+            <Star size={size} className='text-neutral-200 fill-neutral-200 dark:text-neutral-700 dark:fill-neutral-700' />
             <div className={`absolute left-0 top-0 h-full overflow-hidden ${isFull ? 'w-full' : isHalf ? 'w-1/2' : 'w-0'}`}>
-              <Star size={size} className='text-[#ffc107] fill-[#ffc107]' />
+              <Star size={size} className='text-rose-600 fill-rose-600' />
             </div>
           </div>
         )
