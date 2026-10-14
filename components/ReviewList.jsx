@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Star, MessageSquare, Trash2, Edit } from 'lucide-react';
 import { useAuth } from '../AuthContextPro';
+import Rating from "./Rating";
 
 export default function ReviewList({ customReviews }) {
   const { currentUser } = useAuth();
@@ -211,15 +212,7 @@ export default function ReviewList({ customReviews }) {
                   />
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <label>별점: </label>
-                    <select
-                      value={editScore}
-                      onChange={(e) => setEditScore(e.target.value)}
-                      style={{ padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
-                    >
-                      {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>{num}점</option>
-                      ))}
-                    </select>
+                    <Rating rating={editScore} setRating={setEditScore} />
                     <input
                       type="text"
                       value={editTag}
