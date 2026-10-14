@@ -98,7 +98,7 @@ const SearchBar = () => {
                 key={movie.id}
                 type="button"
                 onClick={() => selectMovie(movie)}
-                className="flex items-center gap-3 w-full p-3 text-left hover:bg-[#FFF1A8] hover:text-black transition-colors dark:hover:bg-[#383838]"
+                className="flex items-center gap-3 w-full p-3 text-left hover:bg-[#FFF1A8] hover:text-black transition-colors dark:hover:bg-[#383838] dark:hover:text-white group"
               >
                 <img
                   src={movie.poster}
@@ -107,10 +107,10 @@ const SearchBar = () => {
                 />
 
                 <div className="min-w-0">
-                  <p className="font-bold text-[15px] truncate">
+                  <p className="font-bold text-[15px] truncate text-black dark:text-white dark:group-hover:text-white">
                     {movie.title}
                   </p>
-                  <p className="mt-1 text-xs text-gray-600 line-clamp-2 dark:text-gray-400">
+                  <p className="mt-1 text-xs text-gray-600 line-clamp-2 dark:text-gray-300 dark:group-hover:text-gray-200">
                     {movie.content}
                   </p>
                 </div>
