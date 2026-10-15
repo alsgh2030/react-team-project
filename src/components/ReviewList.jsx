@@ -223,7 +223,7 @@ export default function ReviewList({ customReviews }) {
               className={`border rounded-2xl p-6 mb-4 bg-white dark:bg-[#222222] text-neutral-900 dark:text-neutral-100 transition-all duration-500 border-neutral-200 dark:border-neutral-300 ${
                 focusedReviewId === review.id
                   ? 'border-rose-500 ring-4 ring-rose-500/20'
-                  : 'border-neutral-200 dark:border-neutral-800'
+                  : 'border-neutral-200 dark:border-neutral-700'
               }`}
             >
               {/* 수정 모드인 경우 */}
@@ -297,7 +297,7 @@ export default function ReviewList({ customReviews }) {
                   )}
 
                   {/* 하단 버튼 및 수정/삭제 */}
-                  <div className="flex justify-between items-center border-t border-neutral-100 dark:border-neutral-800 pt-3">
+                  <div className="flex justify-between items-center border-t border-neutral-100 dark:border-neutral-700 pt-3">
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleLikeReview(review.id)}
