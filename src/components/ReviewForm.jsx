@@ -29,7 +29,7 @@ const ReviewForm = () => {
       content,
       score,
       userId: currentUser.userId,
-      movieId: currentMovie.movieId
+      movieId: currentMovie.id
     };
 
     reviews.push(newReview);

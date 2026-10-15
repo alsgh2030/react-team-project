@@ -39,7 +39,7 @@ const MainPage = () => {
   const [reviews, setReviews] = useState(
     JSON.parse(localStorage.getItem("reviews")) || [],
   );
-  const { currentUser, getMovieStats } = useAuth();
+  const { currentUser, getMovieStats,currentMovie,setCurrentMovie } = useAuth();
 
   const shuffled = () => {
     const suf_mov = movies.map((x) => ({ ...x, key: Math.random() }));
@@ -233,6 +233,11 @@ const MainPage = () => {
   const alig_review = [...reviews].sort((x, y) => y.id - x.id);
   const profile_icon = JSON.parse(localStorage.getItem("profile_icon")) || [];
   const comments = JSON.parse(localStorage.getItem("comments")) || [];
+
+  const onClickMovie = (movie) => {
+    setCurrentMovie(movie)
+    navigate(`/movie/${movie.id}`)
+  }
 
   return (
     <div className="min-h-screen bg-[#f2f3f6] text-neutral-900 transition-colors duration-200 dark:bg-[#181818] dark:text-neutral-100">
@@ -443,7 +448,7 @@ const MainPage = () => {
               const onBanner = () => {
                 if (pos === 1) onLeft1();
                 else if (pos === 3) onRight1();
-                else if (pos === 2) navigate(`/movie/${x.id}`);
+                else if (pos === 2) onClickMovie(x);
               };
 
               return (
@@ -558,7 +563,7 @@ const MainPage = () => {
                 <div key={x.id} className="group w-[220px] shrink-0">
                   <img
                     src={x.poster}
-                    onClick={() => navigate(`/movie/${x.id}`)}
+                    onClick={() => onClickMovie(x)}
                     className="aspect-[2/3] w-[220px] cursor-pointer rounded-lg object-cover ring-1 ring-black/5 transition-transform duration-200 group-hover:scale-[1.03]"
                   />
                   <p className="mt-3 truncate text-[15px] font-bold">
