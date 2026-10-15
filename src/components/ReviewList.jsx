@@ -209,7 +209,7 @@ export default function ReviewList({ customReviews }) {
   return (
     <div className="max-w-[760px] mx-auto px-5 py-8 transition-colors duration-200">
       {displayReviews.length === 0 ? (
-        <p className="text-center text-neutral-500 dark:text-neutral-400 py-14 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-700">등록된 리뷰가 없습니다.</p>
+        <p className="text-center text-neutral-500 dark:text-neutral-400 py-14 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#222222]">등록된 리뷰가 없습니다.</p>
       ) : (
           displayReviews.map((review) => {
           const targetMovie = movies.find((m) => m.id === review.movieId);
@@ -220,7 +220,7 @@ export default function ReviewList({ customReviews }) {
           return (
            <div
               key={review.id} id={`review-${review.id}`}
-              className={`border rounded-2xl p-6 mb-4 bg-white dark:bg-[#222222] text-neutral-900 dark:text-neutral-100 transition-all duration-500 ${
+              className={`border rounded-2xl p-6 mb-4 bg-white dark:bg-[#222222] text-neutral-900 dark:text-neutral-100 transition-all duration-500 border-neutral-200 dark:border-neutral-300 ${
                 focusedReviewId === review.id
                   ? 'border-rose-500 ring-4 ring-rose-500/20'
                   : 'border-neutral-200 dark:border-neutral-800'
@@ -345,7 +345,7 @@ export default function ReviewList({ customReviews }) {
                           onChange={(e) => setCommentInput(e.target.value)}
                           className="flex-1 h-10 px-4 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#2a2a2a] text-neutral-900 dark:text-white placeholder:text-neutral-400 outline-none focus:border-rose-500"
                         />
-                        <button type="submit" className="h-10 px-4 bg-neutral-900 text-white rounded-lg font-bold cursor-pointer hover:bg-black dark:bg-white dark:text-neutral-900">
+                        <button type="submit" className="h-10 px-5 bg-rose-600 text-white rounded-lg font-bold cursor-pointer hover:bg-rose-700">
                           등록
                         </button>
                       </form>

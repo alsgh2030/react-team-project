@@ -39,7 +39,8 @@ const MainPage = () => {
   const [reviews, setReviews] = useState(
     JSON.parse(localStorage.getItem("reviews")) || [],
   );
-  const { currentUser, getMovieStats,currentMovie,setCurrentMovie } = useAuth();
+  const { currentUser, getMovieStats, currentMovie, setCurrentMovie } =
+    useAuth();
 
   const shuffled = () => {
     const suf_mov = movies.map((x) => ({ ...x, key: Math.random() }));
@@ -235,9 +236,12 @@ const MainPage = () => {
   const comments = JSON.parse(localStorage.getItem("comments")) || [];
 
   const onClickMovie = (movie) => {
-    setCurrentMovie(movie)
-    navigate(`/movie/${movie.id}`)
-  }
+    setCurrentMovie(movie);
+    navigate(`/movie/${movie.id}`);
+  };
+  useEffect(() => {
+    localStorage.setItem("currentMovie", JSON.stringify(currentMovie));
+  }, [currentMovie]);
 
   return (
     <div className="min-h-screen bg-[#f2f3f6] text-neutral-900 transition-colors duration-200 dark:bg-[#181818] dark:text-neutral-100">
@@ -446,9 +450,11 @@ const MainPage = () => {
 
               // 양옆 배너를 누르면 그 포스터가 가운데로, 가운데 배너를 누르면 상세 페이지로
               const onBanner = () => {
-                if (pos === 1) onLeft1();
-                else if (pos === 3) onRight1();
-                else if (pos === 2) onClickMovie(x);
+                if (pos === 1)
+                  onRight1(); // 왼쪽 흐릿한 영화
+                else if (pos === 3)
+                  onLeft1(); // 오른쪽 흐릿한 영화
+                else if (pos === 2) onClickMovie(x); // 가운데 영화
               };
 
               return (
@@ -495,16 +501,14 @@ const MainPage = () => {
                       {x.content}
                     </span>
                     <span className="mt-2 text-sm text-neutral-200">
-                      {stats.count > 0 ? (
-                        <>
-                          <span className="font-bold text-rose-300">
-                            ★ {stats.avg.toFixed(1)}
-                          </span>{" "}
-                          · 리뷰 {stats.count}
-                        </>
-                      ) : (
-                        <span className="text-neutral-300">리뷰 없음</span>
-                      )}
+                      <span
+                        className={`font-bold ${
+                          stats.count > 0 ? "text-rose-300" : "text-neutral-400"
+                        }`}
+                      >
+                        ★ {stats.count > 0 ? stats.avg.toFixed(1) : "0.0"}
+                      </span>{" "}
+                      · 리뷰 {stats.count}
                     </span>
                   </div>
                 </div>
@@ -570,17 +574,17 @@ const MainPage = () => {
                     {x.title}
                   </p>
                   <p className="mt-0.5 text-[13px] text-neutral-500 dark:text-neutral-400">
-                    {stats.count > 0 ? (
-                      <>
-                        평균{" "}
-                        <span className="font-bold text-rose-600">
-                          ★ {stats.avg.toFixed(1)}
-                        </span>{" "}
-                        · 리뷰 {stats.count}
-                      </>
-                    ) : (
-                      "리뷰 없음"
-                    )}
+                    평균{" "}
+                    <span
+                      className={`font-bold ${
+                        stats.count > 0
+                          ? "text-rose-600"
+                          : "text-neutral-400 dark:text-neutral-500"
+                      }`}
+                    >
+                      ★ {stats.count > 0 ? stats.avg.toFixed(1) : "0.0"}
+                    </span>{" "}
+                    · 리뷰 {stats.count}
                   </p>
                 </div>
               );
@@ -651,7 +655,7 @@ const MainPage = () => {
                     {x.content}
                   </p>
 
-                  <div className="mt-auto flex gap-1 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+                  <div className="mt-auto flex gap-1 border-t border-neutral-100 pt-3 dark:border-neutral-700">
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
@@ -691,43 +695,51 @@ const MainPage = () => {
       </div>
 
       {/* 하단 회사 정보 (푸터) */}
-      <footer className="mt-24 border-t border-neutral-800 bg-[#1c1c1e] text-neutral-400">
+      <footer className="mt-24 border-t border-neutral-200 bg-[#e5e7eb] text-neutral-600 dark:border-neutral-800 dark:bg-[#1c1c1e] dark:text-neutral-400">
         <div className="mx-auto max-w-[1200px] px-6">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-neutral-800 py-5 text-sm">
-            <span className="cursor-pointer hover:text-neutral-200">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-neutral-300 py-5 text-sm dark:border-neutral-800">
+            <span className="cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-200">
               서비스 이용약관
             </span>
-            <span className="cursor-pointer font-bold text-neutral-200">
+            <span className="cursor-pointer font-bold text-neutral-900 dark:text-neutral-200">
               개인정보처리방침
             </span>
-            <span className="cursor-pointer hover:text-neutral-200">
+            <span className="cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-200">
               고객센터
             </span>
           </div>
 
           <div className="flex flex-col gap-3 py-8 text-sm">
-            <p className="text-base font-bold text-neutral-100">
+            <p className="text-base font-bold text-neutral-900 dark:text-neutral-100">
               (주) 예진보유국
             </p>
             <p>
-              <span className="mr-2 font-bold text-neutral-200">주소</span>서울
-              종로구 인사동길 12 대일빌딩 7층
-              <span className="mx-3 text-neutral-700">|</span>
-              <span className="mr-2 font-bold text-neutral-200">대표자</span>
+              <span className="mr-2 font-bold text-neutral-800 dark:text-neutral-200">
+                주소
+              </span>
+              서울 종로구 인사동길 12 대일빌딩 7층
+              <span className="mx-3 text-neutral-400 dark:text-neutral-700">
+                |
+              </span>
+              <span className="mr-2 font-bold text-neutral-800 dark:text-neutral-200">
+                대표자
+              </span>
               최민호
             </p>
             <p>
-              <span className="mr-2 font-bold text-neutral-200">
+              <span className="mr-2 font-bold text-neutral-800 dark:text-neutral-200">
                 사업자등록번호
               </span>
               123-45-67890
-              <span className="mx-3 text-neutral-700">|</span>
-              <span className="mr-2 font-bold text-neutral-200">
+              <span className="mx-3 text-neutral-400 dark:text-neutral-700">
+                |
+              </span>
+              <span className="mr-2 font-bold text-neutral-800 dark:text-neutral-200">
                 통신판매업신고
               </span>
               제2026-서울종로-1015호
             </p>
-            <p className="mt-3 text-xs text-neutral-500">
+            <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-500">
               copyright © 민호 무비. All Rights Reserved.
             </p>
           </div>
