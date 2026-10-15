@@ -544,7 +544,7 @@ const MainPage = () => {
         </h3>
       </div>
 
-      <div className="relative mx-auto mt-5 w-full max-w-[1280px] px-4">
+      <div className="relative mx-auto mt-5 w-[1280px]">
         <ArrowButton
           dir="left"
           size={52}
@@ -553,7 +553,7 @@ const MainPage = () => {
           className="top-[170px] left-[-36px]"
         />
 
-        <div className="mx-auto w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white px-[10px] pb-6 pt-6 dark:border-neutral-800 dark:bg-[#222222]">
+        <div className="mx-auto w-[1200px] overflow-hidden rounded-2xl border border-neutral-200 bg-white px-[10px] pb-6 pt-6 dark:border-neutral-800 dark:bg-[#222222]">
           <div
             className="flex gap-5"
             style={{
@@ -606,7 +606,7 @@ const MainPage = () => {
           따끈따끈한 신작 리뷰
         </h3>
 
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid grid-cols-3 gap-4">
           {alig_review.length === 0 && (
             <p className="col-span-3 rounded-xl border border-dashed border-neutral-300 py-14 text-center text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
               아직 등록된 리뷰가 없습니다.
