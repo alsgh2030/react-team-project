@@ -80,6 +80,8 @@ export default function ReviewList({ customReviews }) {
 
     localStorage.setItem('reviews', JSON.stringify(updatedReviews));
     localStorage.setItem('comments', JSON.stringify(updatedComments));
+    loadData();
+    window.dispatchEvent(new Event('local-update'));
     setReviews(updatedReviews);
     setComments(updatedComments);
   };
