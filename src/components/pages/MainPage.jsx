@@ -62,15 +62,15 @@ const MainPage = () => {
   };
 
   const onLeft2 = () => {
-    const left_1 = top_movie_List.slice(0, 5);
-    const left_2 = top_movie_List.slice(5, 10);
-    setTop_moive_List([...left_2, ...left_1]);
-  };
-
-  const onRight2 = () => {
     const right_1 = top_movie_List.slice(0, -5);
     const right_2 = top_movie_List.slice(-5);
     setTop_moive_List([...right_2, ...right_1]);
+  };
+
+  const onRight2 = () => {
+    const left_1 = top_movie_List.slice(0, 5);
+    const left_2 = top_movie_List.slice(5, 10);
+    setTop_moive_List([...left_2, ...left_1]);
   };
 
   const navigate = useNavigate();
@@ -426,7 +426,7 @@ const MainPage = () => {
       <div className="group relative mt-8 overflow-hidden">
         <ArrowButton
           dir="left"
-          onClick={onLeft1}
+          onClick={onRight1}
           label="이전 영화"
           className="top-1/2 left-[calc(50%-354px)] opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 focus-visible:opacity-100"
         />
@@ -441,8 +441,8 @@ const MainPage = () => {
 
               // 양옆 배너를 누르면 그 포스터가 가운데로, 가운데 배너를 누르면 상세 페이지로
               const onBanner = () => {
-                if (pos === 1) onRight1();
-                else if (pos === 3) onLeft1();
+                if (pos === 1) onLeft1();
+                else if (pos === 3) onRight1();
                 else if (pos === 2) navigate(`/movie/${x.id}`);
               };
 
@@ -509,7 +509,7 @@ const MainPage = () => {
 
         <ArrowButton
           dir="right"
-          onClick={onRight1}
+          onClick={onLeft1}
           label="다음 영화"
           className="top-1/2 left-[calc(50%+286px)] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 focus-visible:opacity-100"
         />
@@ -539,7 +539,7 @@ const MainPage = () => {
         <ArrowButton
           dir="left"
           size={52}
-          onClick={() => slidePop(-1, onLeft2)}
+          onClick={() => slidePop(1, onLeft2)}
           label="이전 인기작"
           className="top-[170px] left-[-36px]"
         />
@@ -586,7 +586,7 @@ const MainPage = () => {
         <ArrowButton
           dir="right"
           size={52}
-          onClick={() => slidePop(1, onRight2)}
+          onClick={() => slidePop(-1, onRight2)}
           label="다음 인기작"
           className="top-[170px] right-[-36px]"
         />

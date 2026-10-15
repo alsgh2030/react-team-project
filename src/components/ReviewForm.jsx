@@ -22,14 +22,14 @@ const ReviewForm = () => {
     }
 
     let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
-
+// crrentMoive가 없어서 리뷰 작성 불가능 및 useParams 사용하여 navigate 경로 /moive/:id 기능 부탁!!!!!!!!!!
     const newReview = {
       id: Date.now(),
       title,
       content,
       score,
       userId: currentUser.userId,
-      movieId: 1 // currentMovie.movieId,
+      movieId: currentMovie.movieId
     };
 
     reviews.push(newReview);
@@ -39,7 +39,7 @@ const ReviewForm = () => {
     setTitle("");
     setContent("");
 
-    navigate("/reviewList");
+    navigate("/reviewList"); // 임시로 달아놓은 경로
   };
 
   return (

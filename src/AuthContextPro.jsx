@@ -54,6 +54,10 @@ export const AuthContextPro=({children})=>{
     JSON.parse(localStorage.getItem('currentUser')) || null
     );
 
+    const [currentMovie, setCurrentMovie] = useState(
+    JSON.parse(localStorage.getItem('currentMovie')) || null
+    );
+
 
     const logout=()=>{
         setCurrentUser(null)
@@ -121,7 +125,7 @@ if(!localStorage.getItem('reviews')){
     }
 
     return(
-        <AuthContext.Provider value={{currentUser,setCurrentUser,logout,getMovieStats}}>
+        <AuthContext.Provider value={{currentUser,setCurrentUser,logout,getMovieStats,currentMovie,setCurrentMovie}}>
             {children}
         </AuthContext.Provider>
     )

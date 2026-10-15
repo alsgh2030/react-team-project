@@ -1,8 +1,7 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { useAuth } from "../AuthContextPro";
-import StarDisplay from "./StarDisplay";
+import React, { useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import { useAuth } from '../AuthContextPro'
 
 // 21개 영화 상세 데이터
 const movieDetails = {
@@ -39,7 +38,21 @@ const movieDetails = {
     "먼작귀": {
         releaseDate: "2026.09.30",
         overview: "일본 • 애니메이션 • 99분",
-        synopsis: "어느 날, 치이카와와 하치와레가 광장에서 쉬고 있는데, 갑자기 얼굴에 전단지를 붙인 우사기가 찾아온다. 하치와레가 그 전단지를 확인하자, 그것은 '특별한 섬으로 초대'라고 쓰여진 초대장이었다."
+        originalWork: "만화 '먼작귀'",
+        synopsis: `어느 날, 광장에서 쉬고 있던 치이카와와 가르마 앞에 얼굴에 전단지를 붙인 토끼가 나타난다.
+
+그곳엔 “특별한 섬으로의 초대”라는 글귀가 적혀 있는데...
+
+“섬에서 간단한 토벌만 해도 보수 100배!”
+“한정 섬라멘과 한정 디저트까지, 달콤한 것도 매콤한 것도 사실상 무료”
+
+솔깃한 문구에 이끌린 치이카와와 친구들은 섬에서 열리는 행사에 참가하기로 한다.
+
+초대장의 내용이 어딘가 수상하다고 느끼는 해달과, 부푼 마음으로 배에 오르는 치이카와와 친구들.
+
+모두가 기대를 안은 채 특별한 섬에 도착하는데!
+
+과연 그 섬에는 어떤 비밀이 숨겨져 있을까...?!`
     },
     "바람과 함께 사라지다": {
         releaseDate: "1957.03.25",
@@ -111,171 +124,258 @@ const movieDetails = {
         overview: "한국 • 액션 • 120분",
         synopsis: "아무도 예상하지 않은 쓰나미가 해운대에 몰아치고, 엉망진창 대응과 재난에 무감한 부산 시민들을 구하기 위해 사랑하는 사람들이 쓰나미와 사투한다."
     }
-};
+}
 
-// 저장된 영화 제목과 상세 정보 연결
 const getMovieDetail = (title = "") => {
-    const name = title.trim().replace(/\s+/g, " ");
+    const name = title.trim().replace(/\s+/g, " ")
 
-    if (movieDetails[name]) return movieDetails[name];
+    if (movieDetails[name]) return movieDetails[name]
 
     if (name.includes("먼작귀")) {
-        return movieDetails["먼작귀"];
+        return movieDetails["먼작귀"]
     }
 
-    if (
-        name.includes("귀멸의 칼날") &&
-        name.includes("무한열차")
-    ) {
-        return movieDetails["귀멸의 칼날 무한열차"];
+    if (name.includes("귀멸의 칼날") && name.includes("무한열차")) {
+        return movieDetails["귀멸의 칼날 무한열차"]
     }
 
-    if (
-        name.includes("신과함께") &&
-        name.includes("죄와 벌")
-    ) {
-        return movieDetails["신과 함께: 죄와 벌"];
+    if (name.includes("신과함께") && name.includes("죄와 벌")) {
+        return movieDetails["신과 함께: 죄와 벌"]
     }
 
-    return {};
-};
+    return {}
+}
 
 const MovieDetail = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { getMovieStats } = useAuth();
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { currentUser, getMovieStats } = useAuth()
 
-    // 기존 영화 목록
-    const movies = JSON.parse(
-        localStorage.getItem("movies") || "[]"
-    );
+    // 기존 영화 데이터 및 리뷰 데이터 불러오기
+    const movies = JSON.parse(localStorage.getItem('movies') || '[]')
+    const reviews = JSON.parse(localStorage.getItem('reviews') || '[]')
 
-    // URL의 ID와 일치하는 영화
-    const currentMovie = movies.find(
-        (movie) => String(movie.id) === id
-    );
+    // URL의 id와 일치하는 영화 찾기
+    const currentMovie = movies.find(movie => String(movie.id) === id)
 
     if (!currentMovie) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#f2f3f6] text-neutral-900 dark:bg-[#181818] dark:text-white">
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-bold mb-4">
                     영화를 찾을 수 없습니다.
                 </h2>
                 <button
-                    onClick={() => navigate("/")}
-                    className="mt-6 rounded-lg bg-rose-600 px-6 py-3 text-white"
+                    onClick={() => navigate('/')}
+                    className="rounded-lg bg-rose-600 px-6 py-3 text-white"
                 >
                     메인으로 돌아가기
                 </button>
             </div>
-        );
+        )
     }
 
-    // 영화 데이터 +  상세 정보
+    // 영화 기본 정보 + 상세 매핑 정보 합치기
     const movie = {
         ...currentMovie,
-        ...getMovieDetail(currentMovie.title),
-    };
+        ...getMovieDetail(currentMovie.title)
+    }
 
-    // 메인 페이지와 동일한 평균 평점
-    const stats = getMovieStats(movie.id);
-    const avg = Number(stats?.avg) || 0;
-    const count = Number(stats?.count) || 0;
+    // 해당 영화 리뷰만 필터링
+    const movieReviews = reviews.filter(
+        review => String(review.movieId) === String(movie.id)
+    )
 
-    // 리뷰 작성 페이지로 영화 ID 전달
-    const goToReview = () => {
-        navigate("/review/create", {
-            state: { movieId: movie.id },
-        });
-    };
+    // 평균 별점 계산 (getMovieStats 또는 직접 계산)
+    const stats = getMovieStats ? getMovieStats(movie.id) : null
+    const averageRating = stats?.avg ? Number(stats.avg).toFixed(1) : (
+        movieReviews.length
+            ? (
+                movieReviews.reduce(
+                    (sum, review) => sum + Number(review.score), 0
+                ) / movieReviews.length
+            ).toFixed(1)
+            : '0.0'
+    )
+
+    const reviewCount = stats?.count ? stats.count : movieReviews.length
+
+    // 리뷰 등록 페이지로 이동 (state 또는 쿼리스트링 모두 대응)
+    const goToReviewForm = () => {
+        if (!currentUser) {
+            alert('로그인 후 리뷰를 작성할 수 있습니다.')
+            navigate('/login')
+            return
+        }
+
+        navigate('/review/create', {
+            state: { movieId: movie.id }
+        })
+    }
 
     return (
-        <div className="min-h-screen bg-[#f2f3f6] text-neutral-900 transition-colors dark:bg-[#181818] dark:text-white">
-            <div className="mx-auto max-w-[1100px] px-6 py-12">
+        <div className="min-h-screen bg-[#f2f3f6] pb-20 text-neutral-900 transition-colors duration-200 dark:bg-[#181818] dark:text-neutral-100">
 
-                {/* 뒤로가기 */}
-                <button
-                    onClick={() => navigate(-1)}
-                    className="mb-8 flex items-center gap-2 text-sm text-neutral-500 transition hover:text-rose-600 dark:text-neutral-400"
-                >
-                    <ArrowLeft size={18} />
-                    뒤로가기
-                </button>
+            {/* 영화 상세 정보 */}
+            <section className="mb-12">
 
-                {/* 영화 상세 정보 */}
-                <div className="flex flex-col gap-10 rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm md:flex-row dark:border-neutral-800 dark:bg-[#222222]">
-
-                    {/* 포스터 */}
-                    <div className="shrink-0">
+                {/* 가로 포스터 (wide_poster가 없으면 일반 포스터나 배경 대체용으로 안전 처리) */}
+                <div className="relative h-[340px] w-full overflow-hidden bg-neutral-800">
+                    {movie.wide_poster && (
                         <img
-                            src={movie.poster}
-                            alt={`${movie.title} 포스터`}
-                            className="h-[390px] w-[260px] rounded-xl object-cover shadow-md"
+                            src={movie.wide_poster}
+                            alt={movie.title}
+                            className="w-full h-full object-cover"
                         />
+                    )}
+                    <div className="absolute inset-0 bg-black/40"></div>
+                    <div className="absolute top-6 left-6 z-10">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="flex items-center gap-2 text-sm text-white/80 transition hover:text-white bg-black/30 px-3 py-1.5 rounded-lg backdrop-blur-sm"
+                        >
+                            <ArrowLeft size={16} />
+                            뒤로가기
+                        </button>
+                    </div>
+                </div>
+
+                <div className="mx-auto flex max-w-[1100px] flex-col gap-9 px-6 md:flex-row">
+
+                    {/* 세로 포스터 */}
+                    <div className="-mt-32 relative w-48 md:w-56 shrink-0">
+                        {movie.poster && (
+                            <img
+                                src={movie.poster}
+                                alt={movie.title}
+                                className="w-full h-[340px] object-cover rounded-xl border-4 border-[#f2f3f6] shadow-2xl dark:border-[#181818]"
+                            />
+                        )}
                     </div>
 
-                    {/* 상세 내용 */}
-                    <div className="min-w-0 flex-1">
-                        <h1 className="text-4xl font-black tracking-tight">
+                    {/* 영화 정보 */}
+                    <div className="flex-1 pt-6">
+                        <h1 className="text-[32px] font-bold tracking-tight mb-2 leading-tight">
                             {movie.title}
                         </h1>
 
-                        <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-                            {movie.releaseDate || "개봉일 정보 없음"}
+                        <p className="text-neutral-500 mb-1 dark:text-neutral-400">
+                            {movie.overview}
                         </p>
 
-                        <p className="mt-2 text-neutral-600 dark:text-neutral-300">
-                            {movie.overview || movie.content || "영화 정보 없음"}
+                        <p className="text-sm text-neutral-500 mb-1 dark:text-neutral-400">
+                            개봉일: {movie.releaseDate || "개봉일 정보 없음"}
                         </p>
 
-                        {/* 별점과 리뷰 수 */}
-                        <div className="mt-6 flex flex-wrap items-center gap-3">
-                            <StarDisplay
-                                score={count > 0 ? avg : 0}
-                                size={24}
-                            />
-
-                            <span className="font-bold text-rose-600">
-                                {count > 0 ? avg.toFixed(1) : "평점 없음"}
-                            </span>
-
-                            <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                                리뷰 {count}개
-                            </span>
-                        </div>
-
-                        {/* 줄거리 */}
-                        <div className="mt-8">
-                            <h2 className="text-xl font-bold">
-                                줄거리
-                            </h2>
-
-                            <p className="mt-3 whitespace-pre-line leading-8 text-neutral-600 dark:text-neutral-300">
-                                {movie.synopsis ||
-                                    movie.content ||
-                                    "줄거리 정보가 없습니다."}
-                            </p>
-                        </div>
-
-                        {/* 원작 정보가 있는 영화만 표시 */}
                         {movie.originalWork && (
-                            <p className="mt-5 text-sm text-neutral-500 dark:text-neutral-400">
+                            <p className="text-sm text-neutral-500 mb-6 dark:text-neutral-400">
                                 원작: {movie.originalWork}
                             </p>
                         )}
 
-                        {/* 리뷰 작성 버튼 */}
-                        <button
-                            onClick={goToReview}
-                            className="mt-8 rounded-lg bg-rose-600 px-7 py-3 font-bold text-white transition hover:bg-rose-700"
-                        >
-                            리뷰 등록
-                        </button>
+                        {/* 평점 */}
+                        <div className="flex items-center gap-8 py-5 mb-8 border-y border-neutral-200 dark:border-neutral-800">
+
+                            <div>
+                                <p className="text-sm text-neutral-500 dark:text-neutral-400">평균 별점</p>
+                                <p className="text-[28px] font-bold text-rose-600">
+                                    ★ {averageRating}
+                                </p>
+                            </div>
+
+                            <div className="h-11 w-px bg-neutral-200 dark:bg-neutral-800"></div>
+
+                            <div>
+                                <p className="text-sm text-neutral-500 dark:text-neutral-400">리뷰 수</p>
+                                <p className="text-[28px] font-bold">
+                                    {reviewCount}개
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <h2 className="text-xl font-bold mb-3">
+                            줄거리
+                        </h2>
+
+                        <p className="text-neutral-700 leading-8 whitespace-pre-wrap dark:text-neutral-300">
+                            {movie.synopsis || movie.content || "줄거리 정보가 없습니다."}
+                        </p>
                     </div>
                 </div>
+            </section>
+
+            <div className="mx-auto max-w-[1100px] px-6">
+
+            {/* 리뷰 등록 버튼 */}
+            <section className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-6 mb-10 dark:border-neutral-800 dark:bg-[#222222]">
+
+                    <div>
+                        <h2 className="text-xl font-bold mb-1">
+                            영화 리뷰
+                        </h2>
+                        <p className="text-neutral-500 text-sm dark:text-neutral-400">
+                            영화를 감상한 후기를 남겨보세요!
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={goToReviewForm}
+                        className="h-12 rounded-xl bg-rose-600 px-7 font-bold text-white transition-colors hover:bg-rose-700 cursor-pointer"
+                    >
+                        리뷰 등록
+                    </button>
+
+            </section>
+
+            {/* 리뷰 목록 */}
+            <section className="rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-[#222222]">
+
+                <h2 className="text-xl font-bold mb-2">
+                    관람객 리뷰 <span className="text-rose-600">({movieReviews.length})</span>
+                </h2>
+
+                {movieReviews.length === 0 ? (
+                    <p className="text-neutral-500 text-center py-14 rounded-xl border border-dashed border-neutral-300 mt-4 dark:border-neutral-700 dark:text-neutral-400">
+                        아직 작성된 리뷰가 없습니다.
+                    </p>
+                ) : (
+                    <div>
+                        {movieReviews.map(review => (
+                            <div
+                                key={review.id}
+                                className="border-b border-neutral-100 py-5 dark:border-neutral-800"
+                            >
+                                <div className="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p className="font-bold">
+                                            {review.title}
+                                        </p>
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                            작성자: {review.userId || review.author}
+                                        </p>
+                                    </div>
+
+                                    <span className="text-rose-600 font-bold tracking-wider">
+                                        {'★'.repeat(Number(review.score))}
+                                    </span>
+                                </div>
+
+                                <p className="text-neutral-700 leading-relaxed dark:text-neutral-300">
+                                    {review.content}
+                                </p>
+
+                                <p className="text-sm text-neutral-400 mt-3">
+                                    좋아요 {review.like?.length || 0}개
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </section>
+
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default MovieDetail;
+export default MovieDetail
