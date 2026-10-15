@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Heart, Star, MessageSquare, Trash2, Edit } from 'lucide-react';
 import { useAuth } from '../AuthContextPro';
 import Rating from "./Rating";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function ReviewList({ customReviews }) {
   const { currentUser } = useAuth();
@@ -39,6 +40,35 @@ export default function ReviewList({ customReviews }) {
     return () => window.removeEventListener('storage', loadData);
   }, []);
 
+  // 메인페이지 리뷰 카드에서 넘어온 경우: 해당 리뷰 위치로 스크롤
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [focusedReviewId, setFocusedReviewId] = useState(null);
+
+  useEffect(() => {
+    const id = location.state?.reviewId;
+    if (!id) return;
+    const el = document.getElementById(`review-${id}`);
+    if (!el) return; // 리뷰가 아직 안 그려졌으면 다음 렌더에서 다시 시도
+
+    window.scrollTo(0, 0); // 항상 최상단에서 시작
+    const t = setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 해당 리뷰까지 내려오기
+      setFocusedReviewId(id); // 잠깐 강조 표시
+      navigate(location.pathname, { replace: true, state: null }); // 새로고침/뒤로가기 때 다시 실행되지 않게 비움
+    }, 300);
+    return () => clearTimeout(t);
+  }, [location.state, reviews]);
+
+
+   // 강조 표시는 2초 뒤 해제
+  useEffect(() => {
+    if (!focusedReviewId) return;
+    const t = setTimeout(() => setFocusedReviewId(null), 2000);
+    return () => clearTimeout(t);
+  }, [focusedReviewId]);
+
+  
   // 외부(MyPage 등)에서 props로 reviews를 넘겨주면 그것을 우선 사용, 없으면 전체 리뷰 사용
   const displayReviews = customReviews || reviews;
 
@@ -188,8 +218,12 @@ export default function ReviewList({ customReviews }) {
 
           return (
             <div
-              key={review.id}
-              className="border border-neutral-200 dark:border-neutral-800 rounded-2xl p-6 mb-4 bg-white dark:bg-[#222222] text-neutral-900 dark:text-neutral-100 transition-colors duration-200"
+              key={review.id} id={`review-${review.id}`}
+              className={`border rounded-2xl p-6 mb-4 bg-white dark:bg-[#222222] text-neutral-900 dark:text-neutral-100 transition-all duration-500 ${
+                focusedReviewId === review.id
+                  ? 'border-rose-500 ring-4 ring-rose-500/20'
+                  : 'border-neutral-200 dark:border-neutral-800'
+              }`}
             >
               {/* 수정 모드인 경우 */}
               {editingReviewId === review.id ? (
