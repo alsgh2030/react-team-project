@@ -39,7 +39,7 @@ const ReviewForm = () => {
     setTitle("");
     setContent("");
 
-    navigate("/reviewList"); // 임시로 달아놓은 경로
+    navigate(-1); 
   };
 
   return (
