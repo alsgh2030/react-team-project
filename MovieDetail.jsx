@@ -1,5 +1,3 @@
-JSX
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -173,7 +171,7 @@ const MovieDetail = () => {
         );
     }
 
-    // 기존 영화 데이터 + 추가 상세 정보
+    // 영화 데이터 +  상세 정보
     const movie = {
         ...currentMovie,
         ...getMovieDetail(currentMovie.title),
