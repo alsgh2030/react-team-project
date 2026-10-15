@@ -39,8 +39,8 @@ export default function ReviewList({ customReviews }) {
     return () => window.removeEventListener('storage', loadData);
   }, []);
 
-  // 외부(MyPage 등)에서 props로 reviews를 넘겨주면 그것을 우선 사용, 없으면 전체 리뷰 사용
-  const displayReviews = customReviews || reviews;
+  // review display (최신순)
+  const displayReviews = customReviews || [...reviews].sort((a, b) => b.id - a.id);
 
   // 1. 리뷰 좋아요 토글 (한 계정당 한번)
   const handleLikeReview = (reviewId) => {
@@ -180,7 +180,7 @@ export default function ReviewList({ customReviews }) {
       {displayReviews.length === 0 ? (
         <p className="text-center text-neutral-500 dark:text-neutral-400 py-14 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-700">등록된 리뷰가 없습니다.</p>
       ) : (
-        displayReviews.map((review) => {
+          displayReviews.map((review) => {
           const targetMovie = movies.find((m) => m.id === review.movieId);
           const reviewComments = comments.filter((c) => c.reviewId === review.id);
           const isLikedByMe = currentUser && Array.isArray(review.like) && review.like.includes(currentUser.userId);
