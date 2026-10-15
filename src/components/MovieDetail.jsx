@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Heart, MessageCircle, Trash2 } from "lucide-react";
+import { Heart, Star, MessageSquarePlus } from "lucide-react";
 import { useAuth } from "../AuthContextPro";
 import ReviewList from "./ReviewList";
 
-// 1. 영화 상세
+// 1. 영화 상세 
 const movieDetails = {
   1: {
     releaseDate: "2019.05.09",
@@ -46,7 +46,7 @@ const movieDetails = {
 “섬에서 간단한 토벌만 해도 보수 100배!”
 “한정 섬라멘과 한정 디저트까지!”
 
-솔깃한 문구에 이끌린 치이카와와 친구들은 섬에서 열리는 행사에 참가하기로 한다.
+솔깃한 문구에 이끌려 치이카와와 친구들은 섬에서 열리는 행사에 참가하기로 한다.
 
 하지만 초대장의 내용이 어딘가 수상하다고 느끼는 해달.
 
@@ -124,13 +124,12 @@ const movieDetails = {
   }
 };
 
-// 2. MovieDetail 컴포넌트
-const MovieDetail = () => {
+// 2. 영화 상세 컴포넌트
+const MovieDetail = ({ darkMode = false }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  // 데이터 상태
   const [movies, setMovies] = useState(() =>
     JSON.parse(localStorage.getItem("movies") || "[]")
   );
@@ -143,21 +142,12 @@ const MovieDetail = () => {
     JSON.parse(localStorage.getItem("movieLikes") || "{}")
   );
 
-  const [movieComments, setMovieComments] = useState(() =>
-    JSON.parse(localStorage.getItem("movieComments") || "[]")
-  );
-
-  const [commentInput, setCommentInput] = useState("");
-
   // 3. 데이터 불러오기
   useEffect(() => {
     const loadData = () => {
       setMovies(JSON.parse(localStorage.getItem("movies") || "[]"));
       setReviews(JSON.parse(localStorage.getItem("reviews") || "[]"));
       setMovieLikes(JSON.parse(localStorage.getItem("movieLikes") || "{}"));
-      setMovieComments(
-        JSON.parse(localStorage.getItem("movieComments") || "[]")
-      );
     };
 
     loadData();
@@ -171,7 +161,23 @@ const MovieDetail = () => {
     };
   }, [id]);
 
-  // 4. 현재 영화
+  // 4. ReviewList 수정·삭제 후 데이터 동기화
+  useEffect(() => {
+    const syncReviews = () => {
+      const savedReviews = localStorage.getItem("reviews") || "[]";
+
+      setReviews((prev) =>
+        JSON.stringify(prev) === savedReviews
+          ? prev
+          : JSON.parse(savedReviews)
+      );
+    };
+
+    const interval = setInterval(syncReviews, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 5. 현재 영화 및 리뷰
   const currentMovie = movies.find(
     (m) => String(m.id) === String(id)
   );
@@ -180,12 +186,10 @@ const MovieDetail = () => {
     ? { ...currentMovie, ...(movieDetails[currentMovie.id] || {}) }
     : null;
 
-  // 5. 현재 영화의 리뷰
   const movieReviews = reviews.filter(
     (review) => String(review.movieId) === String(id)
   );
 
-  // 평균 별점
   const averageRating = movieReviews.length
     ? (
         movieReviews.reduce(
@@ -195,16 +199,37 @@ const MovieDetail = () => {
       ).toFixed(1)
     : "0.0";
 
-  // 6. 영화 좋아요 및 댓글
+  // 6. 영화 좋아요
   const likes = movieLikes[id] || [];
 
   const isLiked = currentUser?.userId
-    ? likes.includes(currentUser.userId)
+    ? likes.some(
+        (user) => String(user) === String(currentUser.userId)
+      )
     : false;
 
-  const comments = movieComments.filter(
-    (comment) => String(comment.movieId) === String(id)
-  );
+  const handleMovieLike = () => {
+    if (!currentUser?.userId) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    const userId = currentUser.userId;
+
+    const updatedLikes = isLiked
+      ? likes.filter((user) => String(user) !== String(userId))
+      : [...likes, userId];
+
+    const updated = {
+      ...movieLikes,
+      [id]: updatedLikes
+    };
+
+    setMovieLikes(updated);
+    localStorage.setItem("movieLikes", JSON.stringify(updated));
+    window.dispatchEvent(new Event("local-update"));
+  };
 
   // 7. 리뷰 등록 페이지 이동
   const goToReviewForm = () => {
@@ -222,83 +247,34 @@ const MovieDetail = () => {
     });
   };
 
-  // 8. 영화 좋아요
-  const handleMovieLike = () => {
-    if (!currentUser?.userId) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
-      return;
-    }
+  // 8. 팀원 Navibar 디자인과 동일한 컬러
+  const pageBg = darkMode
+    ? "bg-[#181818] text-neutral-100"
+    : "bg-white text-neutral-900";
 
-    const userId = currentUser.userId;
+  const cardStyle = darkMode
+    ? "border-neutral-800 bg-[#222222]"
+    : "border-neutral-200 bg-white";
 
-    const updatedLikes = isLiked
-      ? likes.filter((user) => user !== userId)
-      : [...likes, userId];
+  const subCardStyle = darkMode
+    ? "border-neutral-700 bg-neutral-800"
+    : "border-neutral-200 bg-neutral-50";
 
-    const updated = {
-      ...movieLikes,
-      [id]: updatedLikes
-    };
+  const subText = darkMode
+    ? "text-neutral-400"
+    : "text-neutral-500";
 
-    setMovieLikes(updated);
-    localStorage.setItem("movieLikes", JSON.stringify(updated));
-  };
-
-  // 9. 영화 댓글 등록
-  const handleAddMovieComment = (e) => {
-    e.preventDefault();
-
-    if (!currentUser?.userId) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
-      return;
-    }
-
-    if (!commentInput.trim()) return;
-
-    const newComment = {
-      id: Date.now(),
-      movieId: Number(id),
-      userId: currentUser.userId,
-      content: commentInput.trim()
-    };
-
-    const updated = [...movieComments, newComment];
-
-    setMovieComments(updated);
-    localStorage.setItem("movieComments", JSON.stringify(updated));
-    setCommentInput("");
-  };
-
-  // 10. 영화 댓글 삭제
-  const handleDeleteMovieComment = (commentId) => {
-    const target = movieComments.find(
-      (comment) => comment.id === commentId
-    );
-
-    if (!target || target.userId !== currentUser?.userId) return;
-    if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
-
-    const updated = movieComments.filter(
-      (comment) => comment.id !== commentId
-    );
-
-    setMovieComments(updated);
-    localStorage.setItem("movieComments", JSON.stringify(updated));
-  };
-
-  // 영화가 없을 때
+  // 9. 영화가 없을 때
   if (!movie) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#101015] px-4 text-white">
+      <div className={`flex min-h-screen flex-col items-center justify-center px-4 ${pageBg}`}>
         <h2 className="mb-5 text-2xl font-bold">
           영화를 찾을 수 없습니다.
         </h2>
 
         <button
           onClick={() => navigate("/")}
-          className="rounded-xl bg-pink-600 px-6 py-3 font-bold text-white transition hover:bg-pink-500"
+          className="rounded-lg bg-rose-600 px-6 py-3 font-bold text-white hover:bg-rose-700"
         >
           메인으로 돌아가기
         </button>
@@ -306,13 +282,13 @@ const MovieDetail = () => {
     );
   }
 
-  // 11. 화면
+  // 10. 화면
   return (
-    <div className="min-h-screen bg-[#101015] px-4 py-10 text-white">
-      <div className="mx-auto max-w-5xl space-y-8">
+    <div className={`min-h-screen px-4 py-10 font-sans transition-colors duration-200 ${pageBg}`}>
+      <div className="mx-auto max-w-[1100px] space-y-8">
 
         {/* 1. 영화 상세 정보 */}
-        <section className="overflow-hidden rounded-2xl border border-pink-500/30 bg-[#1c1c24] shadow-[0_0_25px_rgba(236,72,153,0.12)]">
+        <section className={`overflow-hidden rounded-2xl border ${cardStyle}`}>
 
           {/* 가로 포스터 */}
           {movie.wide_poster && (
@@ -323,7 +299,11 @@ const MovieDetail = () => {
                 className="h-64 w-full object-cover md:h-80"
               />
 
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1c1c24] via-transparent to-transparent" />
+              <div className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${
+                darkMode
+                  ? "from-[#222222] via-transparent"
+                  : "from-white via-transparent"
+              } to-transparent`} />
             </div>
           )}
 
@@ -335,14 +315,14 @@ const MovieDetail = () => {
                 <img
                   src={movie.poster}
                   alt={movie.title}
-                  className="w-full rounded-xl border border-pink-400/50 shadow-[0_0_20px_rgba(236,72,153,0.2)]"
+                  className="w-full rounded-xl border border-neutral-300 object-cover shadow-sm"
                 />
               )}
             </div>
 
             {/* 영화 정보 */}
             <div className="min-w-0 flex-1">
-              <p className="mb-2 text-xs font-bold tracking-[0.25em] text-pink-400">
+              <p className="mb-2 text-xs font-bold tracking-[0.25em] text-rose-600">
                 MOVIE DETAIL
               </p>
 
@@ -350,52 +330,60 @@ const MovieDetail = () => {
                 {movie.title}
               </h1>
 
-              <p className="mb-3 text-sm text-gray-400">
+              <p className={`mb-3 text-sm ${subText}`}>
                 {movie.overview || movie.content}
               </p>
 
               {movie.releaseDate && (
-                <p className="mb-2 text-sm text-gray-300">
+                <p className={`mb-2 text-sm ${subText}`}>
                   개봉일: {movie.releaseDate}
                 </p>
               )}
 
               {movie.originalWork && (
-                <p className="mb-2 text-sm text-gray-300">
+                <p className={`mb-2 text-sm ${subText}`}>
                   원작: {movie.originalWork}
                 </p>
               )}
 
-              <div className="my-6 h-px bg-gradient-to-r from-pink-500/60 to-transparent" />
+              <div className={`my-6 h-px ${
+                darkMode ? "bg-neutral-700" : "bg-neutral-200"
+              }`} />
 
-              <h2 className="mb-3 text-xl font-bold text-pink-300">
+              <h2 className="mb-3 text-xl font-bold">
                 줄거리
               </h2>
 
-              <p className="whitespace-pre-wrap leading-8 text-gray-300">
+              <p className={`whitespace-pre-wrap leading-8 ${subText}`}>
                 {movie.synopsis || movie.content}
               </p>
 
-              {/* 평균 별점 */}
+              {/* 평균 별점 및 리뷰 수 */}
               <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="rounded-xl border border-pink-500/30 bg-[#28202e] p-5">
-                  <p className="mb-2 text-sm text-gray-300">
+                <div className={`rounded-xl border p-5 ${subCardStyle}`}>
+                  <p className={`mb-2 text-sm ${subText}`}>
                     평균 별점
                   </p>
 
-                  <p className="text-3xl font-black text-pink-400">
-                    ★ {averageRating}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <Star
+                      size={25}
+                      className="fill-rose-600 text-rose-600"
+                    />
+                    <span className="text-3xl font-black">
+                      {averageRating}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="rounded-xl border border-pink-500/30 bg-[#28202e] p-5">
-                  <p className="mb-2 text-sm text-gray-300">
+                <div className={`rounded-xl border p-5 ${subCardStyle}`}>
+                  <p className={`mb-2 text-sm ${subText}`}>
                     리뷰 수
                   </p>
 
-                  <p className="text-3xl font-black text-white">
+                  <p className="text-3xl font-black">
                     {movieReviews.length}
-                    <span className="ml-1 text-base text-gray-400">
+                    <span className={`ml-1 text-base ${subText}`}>
                       개
                     </span>
                   </p>
@@ -406,147 +394,82 @@ const MovieDetail = () => {
         </section>
 
         {/* 2. 리뷰 등록 */}
-        <section className="rounded-2xl border border-pink-500/30 bg-[#1c1c24] p-6 shadow-[0_0_20px_rgba(236,72,153,0.08)] md:p-8">
+        <section className={`rounded-2xl border p-6 md:p-8 ${cardStyle}`}>
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
             <div>
               <h2 className="mb-2 text-2xl font-black">
                 영화 리뷰
               </h2>
 
-              <p className="text-sm text-gray-400">
+              <p className={`text-sm ${subText}`}>
                 {movie.title} 영화를 감상한 후기를 남겨보세요!
               </p>
             </div>
 
             <button
               onClick={goToReviewForm}
-              className="shrink-0 rounded-xl bg-gradient-to-r from-pink-600 to-fuchsia-500 px-7 py-3 font-bold text-white shadow-[0_0_18px_rgba(236,72,153,0.25)] transition-all hover:brightness-110"
+              className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-rose-600 px-6 py-3 font-bold text-white transition-colors hover:bg-rose-700"
             >
-              + 리뷰 등록
+              <MessageSquarePlus size={19} />
+              리뷰 등록
             </button>
           </div>
         </section>
 
         {/* 3. 관람객 리뷰 */}
-        <section className="rounded-2xl border border-pink-500/30 bg-[#1c1c24] p-5 shadow-[0_0_20px_rgba(236,72,153,0.08)] md:p-8">
+        <section className={`rounded-2xl border p-5 md:p-8 ${cardStyle}`}>
           <div className="mb-5 flex items-center gap-3">
-            <div className="h-7 w-1 rounded-full bg-pink-500 shadow-[0_0_10px_#ec4899]" />
+            <div className="h-7 w-1 rounded-full bg-rose-600" />
 
             <h2 className="text-2xl font-black">
               관람객 리뷰
             </h2>
 
-            <span className="rounded-full bg-pink-500/15 px-3 py-1 text-sm font-bold text-pink-300">
+            <span className={`rounded-full px-3 py-1 text-sm font-bold ${
+              darkMode
+                ? "bg-rose-600/15 text-rose-400"
+                : "bg-rose-50 text-rose-600"
+            }`}>
               {movieReviews.length}
             </span>
           </div>
 
-          {/* 기존 ReviewList 연결 */}
-          <div className="dark rounded-xl bg-[#1c1c24] text-white">
+          {/* 기존 ReviewList 기능 그대로 사용 */}
+          <div className={`rounded-xl ${
+            darkMode
+              ? "dark bg-[#222222] text-white"
+              : "bg-white text-neutral-900"
+          }`}>
             <ReviewList customReviews={movieReviews} />
           </div>
         </section>
 
-        {/* 4. 영화 좋아요 · 댓글 */}
-        <section className="rounded-2xl border border-pink-500/30 bg-[#1c1c24] p-6 shadow-[0_0_20px_rgba(236,72,153,0.08)] md:p-8">
-
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-7 w-1 rounded-full bg-pink-500 shadow-[0_0_10px_#ec4899]" />
+        {/* 4. 영화 자체 좋아요 */}
+        <section className={`rounded-2xl border p-6 md:p-8 ${cardStyle}`}>
+          <div className="mb-5 flex items-center gap-3">
+            <div className="h-7 w-1 rounded-full bg-rose-600" />
 
             <h2 className="text-2xl font-black">
-              영화 좋아요 · 댓글
+              영화 좋아요
             </h2>
           </div>
 
-          {/* 좋아요 및 댓글 개수 */}
-          <div className="mb-7 flex flex-wrap items-center gap-4">
-            <button
-              onClick={handleMovieLike}
-              className={`flex items-center gap-2 rounded-xl border px-5 py-3 font-bold transition-all ${
-                isLiked
-                  ? "border-pink-400 bg-pink-500/20 text-pink-300 shadow-[0_0_15px_rgba(236,72,153,0.2)]"
-                  : "border-gray-700 bg-[#252525] text-gray-300 hover:border-pink-400"
-              }`}
-            >
-              <Heart
-                size={20}
-                className={
-                  isLiked
-                    ? "fill-pink-400 text-pink-400"
-                    : "text-pink-400"
-                }
-              />
-              좋아요 {likes.length}
-            </button>
-
-            <div className="flex items-center gap-2 rounded-xl border border-gray-700 bg-[#252525] px-5 py-3 font-bold text-gray-300">
-              <MessageCircle
-                size={20}
-                className="text-pink-400"
-              />
-              댓글 {comments.length}
-            </div>
-          </div>
-
-          {/* 영화 댓글 작성 */}
-          <form
-            onSubmit={handleAddMovieComment}
-            className="mb-6 flex flex-col gap-3 sm:flex-row"
+          <button
+            onClick={handleMovieLike}
+            className={`flex items-center gap-2 rounded-lg border px-5 py-3 font-bold transition-colors ${
+              isLiked
+                ? "border-rose-600 bg-rose-600 text-white"
+                : darkMode
+                ? "border-neutral-700 bg-neutral-800 text-neutral-300 hover:border-rose-600"
+                : "border-neutral-200 bg-neutral-50 text-neutral-600 hover:border-rose-600"
+            }`}
           >
-            <input
-              type="text"
-              value={commentInput}
-              onChange={(e) => setCommentInput(e.target.value)}
-              placeholder="영화에 대한 댓글을 입력하세요..."
-              className="min-w-0 flex-1 rounded-xl border border-gray-700 bg-[#252525] px-4 py-3 text-white placeholder-gray-500 outline-none transition-colors focus:border-pink-400"
+            <Heart
+              size={20}
+              className={isLiked ? "fill-current" : ""}
             />
-
-            <button
-              type="submit"
-              className="rounded-xl bg-gradient-to-r from-pink-600 to-fuchsia-500 px-7 py-3 font-bold text-white transition hover:brightness-110"
-            >
-              등록
-            </button>
-          </form>
-
-          {/* 영화 댓글 목록 */}
-          <div className="space-y-3">
-            {comments.length === 0 ? (
-              <p className="rounded-xl border border-gray-700 bg-[#252525] py-8 text-center text-gray-400">
-                아직 영화에 대한 댓글이 없습니다.
-              </p>
-            ) : (
-              comments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="flex items-start justify-between gap-4 rounded-xl border border-gray-700 bg-[#252525] p-4"
-                >
-                  <div className="min-w-0">
-                    <p className="mb-2 text-sm font-bold text-pink-300">
-                      {comment.userId}
-                    </p>
-
-                    <p className="break-words leading-7 text-gray-200">
-                      {comment.content}
-                    </p>
-                  </div>
-
-                  {/* 본인 댓글만 삭제 가능 */}
-                  {comment.userId === currentUser?.userId && (
-                    <button
-                      onClick={() =>
-                        handleDeleteMovieComment(comment.id)
-                      }
-                      className="shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-pink-500/10 hover:text-pink-400"
-                      aria-label="댓글 삭제"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
+            좋아요 {likes.length}
+          </button>
         </section>
 
       </div>
