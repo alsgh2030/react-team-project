@@ -48,9 +48,16 @@ const MainPage = () => {
   };
 
   const [random_movies, setRandomMovies] = useState(shuffled().slice(0, 5));
-  const [top_movie_List, setTop_moive_List] = useState(
-    movies.filter((x) => x.avgScore > 3.5).slice(0, 10),
-  );
+  const [top_movie_List, setTop_moive_List] = useState(() =>
+  movies
+    .map((x) => ({ ...x, stats: getMovieStats(x.id) }))
+    .filter((x) => x.stats.count > 0)                 
+    .sort((x, y) =>
+      y.stats.count - x.stats.count ||                
+      (y.stats.avg ?? 0) - (x.stats.avg ?? 0)         
+    )
+    .slice(0, 10),
+);
 
   const onLeft1 = () => {
     const left_1 = random_movies.slice(1);
