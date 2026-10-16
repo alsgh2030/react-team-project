@@ -58,6 +58,16 @@ export const AuthContextPro = ({ children }) => {
     JSON.parse(localStorage.getItem("currentMovie")) || null,
   );
 
+  const saveCurrentMovie = (movie) => {
+    setCurrentMovie(movie);
+    localStorage.setItem("currentMovie", JSON.stringify(currentMovie));
+  };
+
+  const resetCurrentMovie = () => {
+    setCurrentMovie(null);
+    localStorage.removeItem("currentMovie");
+  };
+
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
@@ -483,6 +493,8 @@ export const AuthContextPro = ({ children }) => {
         getMovieStats,
         currentMovie,
         setCurrentMovie,
+        saveCurrentMovie,
+        resetCurrentMovie,
       }}
     >
       {children}
